@@ -14,10 +14,10 @@ const CategoryListItem = ({ device }) => {
           <View className="min-h-48 min-w-48 basis-1/4 rounded-2xl bg-black/15 backdrop-blur-sm dark:bg-black/45">
             <View className="flex-1 justify-between p-4">
               <View>
-                <Text className="text-2xl font-bold text-slate-200 dark:text-slate-50">
+                <Text className="text-2xl font-bold text-slate-200 dark:text-zinc-50">
                   {device.category[0].toUpperCase() + device.category.slice(1)}
                 </Text>
-                <Text className="text-sm text-slate-900 dark:text-slate-200">{device.name}</Text>
+                <Text className="text-sm text-slate-900 dark:text-zinc-200">{device.name}</Text>
               </View>
               <Pressable className=" w-12 items-center justify-center rounded-full p-2 dark:bg-black">
                 <Ionicons name="power" size={28} color="white" />

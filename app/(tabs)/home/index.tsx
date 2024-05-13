@@ -14,6 +14,13 @@ remapProps(FlatList, {
 });
 
 export default function Home() {
+  const uniqueCategories = devices.reduce((acc, device) => {
+    const categoryExists = acc.find((item) => item.category === device.category);
+    if (!categoryExists) {
+      acc.push(device);
+    }
+    return acc;
+  }, []);
   return (
     <>
       <Stack.Screen options={{ title: 'Home' }} />
@@ -22,16 +29,14 @@ export default function Home() {
           <Text className="text-3xl">Your home is</Text>
           <Text className="text-4xl font-bold">Secured</Text>
         </View>
-        <View
-          className="py-w/2 bottom-12 flex-1 bg-white dark:bg-black"
-          style={{ borderRadius: 30 }}>
-          <View className="flex-row items-center pl-5 pt-5">
+        <View className="bottom-12 flex-1 bg-white py-2 dark:bg-black" style={{ borderRadius: 30 }}>
+          <View className="flex-row items-center pl-5 pt-5 ">
             <MaterialIcons name="sensors" size={36} color="white" />
-            <Text className="pl-2 text-3xl font-bold dark:text-slate-50">Devices</Text>
+            <Text className="pl-2 text-3xl font-bold dark:text-zinc-50">Devices</Text>
           </View>
           <FlatList
-            contentContainerClassName="flex-grow flex-row flex-wrap justify-evenly gap-4 p-5"
-            data={devices}
+            contentContainerClassName="flex-grow flex-row flex-wrap justify-evenly gap-4 p-5 mt-10"
+            data={uniqueCategories}
             renderItem={({ item }) => <CategoryListItem device={item} />}
             numColumns={2}
             columnWrapperClassName="gap-4"
