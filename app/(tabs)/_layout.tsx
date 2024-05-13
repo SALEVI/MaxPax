@@ -16,6 +16,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Tab One',
+          headerShown: true,
           tabBarStyle: { backgroundColor: isDarkMode ? 'black' : 'white' },
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="code" color={isDarkMode ? '#84cc16' : 'black'} />
