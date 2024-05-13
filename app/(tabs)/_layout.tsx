@@ -1,8 +1,8 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Link, Tabs } from 'expo-router';
 import { useColorScheme } from 'react-native';
 
 import { HeaderButton } from '../../components/HeaderButton';
-import { TabBarIcon } from '../../components/TabBarIcon';
 
 export default function TabLayout() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -12,14 +12,16 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: isDarkMode ? '#84cc16' : 'black',
       }}>
+      <Tabs.Screen name="index" options={{ href: null }} />
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
-          title: 'Tab One',
-          headerShown: true,
+          title: 'Home',
+          headerShown: false,
+          tabBarShowLabel: false,
           tabBarStyle: { backgroundColor: isDarkMode ? 'black' : 'white' },
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="code" color={isDarkMode ? '#84cc16' : 'black'} />
+            <Ionicons name="home" size={28} color={isDarkMode ? '#84cc16' : 'black'} />
           ),
           headerRight: () => (
             <Link href="/modal" asChild>
@@ -31,8 +33,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="two"
         options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarShowLabel: false,
+          title: 'Devices',
+          tabBarIcon: ({ color }) => <Ionicons name="code" size={28} color={color} />,
         }}
       />
     </Tabs>
