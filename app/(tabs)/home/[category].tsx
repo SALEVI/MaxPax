@@ -1,5 +1,5 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, useColorScheme, Switch } from 'react-native';
 
 import devices from '~/assets/data/devices';
@@ -31,11 +31,13 @@ const DeviceDetailsScreen = () => {
       <View className=" min-h-full dark:bg-zinc-950">
         {/* separator under the title */}
         {/* <View className="mb-2 h-[1px] w-full bg-gray-600 " /> */}
-        <View className="mx-2 my-2 rounded-lg border border-zinc-800">
+        <View className="mx-5 mt-5 rounded-lg border border-zinc-800">
           {devices
             .filter((device) => device.category === category)
             .map((device) => (
-              <View className="flex flex-row items-center justify-between space-x-4 border-b border-zinc-800">
+              <View
+                key={device.id}
+                className="flex flex-row items-center justify-between space-x-4 border-b border-zinc-800">
                 <Text className="rounded-md p-5 text-lg font-medium text-white">
                   {device.name[0].toUpperCase() + device.name.slice(1)}
                 </Text>

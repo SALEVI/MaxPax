@@ -26,8 +26,8 @@ export default function Home() {
       <Stack.Screen options={{ title: 'Home' }} />
       <View className="flex-1 dark:bg-black">
         <View className="min-h-72 w-full pl-5 pt-12 dark:bg-lime-300">
-          <Text className="text-3xl">Your home is</Text>
-          <Text className="text-4xl font-bold">Secured</Text>
+          <Text className="text-3xl font-medium">Your home is</Text>
+          <Text className="text-4xl font-extrabold">Secured</Text>
         </View>
         <View className="bottom-12 flex-1 bg-white py-2 dark:bg-black" style={{ borderRadius: 30 }}>
           <View className="flex-row items-center pl-5 pt-5 ">
