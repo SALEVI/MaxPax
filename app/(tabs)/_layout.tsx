@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Link, Tabs } from 'expo-router';
 import { useColorScheme } from 'react-native';
 
@@ -10,7 +10,8 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: isDarkMode ? '#84cc16' : 'black',
+        tabBarActiveTintColor: isDarkMode ? 'white' : 'black', // Active tint color
+        tabBarInactiveTintColor: 'gray', // Inactive tint color
       }}>
       <Tabs.Screen name="index" options={{ href: null }} />
       <Tabs.Screen
@@ -20,9 +21,11 @@ export default function TabLayout() {
           headerShown: false,
           tabBarShowLabel: false,
           tabBarStyle: { backgroundColor: isDarkMode ? 'black' : 'white' },
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="home" size={28} color={isDarkMode ? '#84cc16' : 'black'} />
-          ),
+          tabBarIcon: ({ focused }) => {
+            // Explicitly set the icon color based on whether the tab is focused (active)
+            const iconColor = focused ? 'white' : 'gray'; // Adjust 'gray' to the desired inactive color
+            return <Ionicons name="home" size={28} color={iconColor} />;
+          },
           headerRight: () => (
             <Link href="/modal" asChild>
               <HeaderButton />
@@ -30,12 +33,18 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen name="sensorsScreen" options={{ href: null }} />
       <Tabs.Screen
-        name="two"
+        name="sensors"
         options={{
           tabBarShowLabel: false,
-          title: 'Devices',
-          tabBarIcon: ({ color }) => <Ionicons name="code" size={28} color={color} />,
+          tabBarStyle: { backgroundColor: isDarkMode ? 'black' : 'white' },
+          title: 'Sensors',
+          headerStyle: {
+            backgroundColor: isDarkMode ? 'black' : 'white',
+          },
+          headerTintColor: isDarkMode ? 'white' : 'black',
+          tabBarIcon: ({ color }) => <MaterialIcons name="sensors" size={28} color={color} />,
         }}
       />
     </Tabs>
