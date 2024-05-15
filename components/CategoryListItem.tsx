@@ -7,11 +7,12 @@ const image = {
 };
 
 const CategoryListItem = ({ sensor }) => {
+  console.log(sensor);
   return (
     <Link
       href={{
         pathname: `/home/${sensor.category}`,
-        params: { id: sensor.id },
+        // params: { id: sensor.id },
       }}
       asChild>
       <Pressable>
