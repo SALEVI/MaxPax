@@ -26,7 +26,10 @@ export default function Home() {
     return <Text>Failed to load data</Text>;
   }
 
-  const uniqueCategories = sensors.reduce((acc, sensors) => {
+  // Sort sensors by id before reducing to unique categories
+  const sortedSensors = sensors.sort((a, b) => a.id - b.id);
+
+  const uniqueCategories = sortedSensors.reduce((acc, sensors) => {
     const categoryExists = acc.find((item) => item.category === sensors.category);
     if (!categoryExists) {
       acc.push(sensors);

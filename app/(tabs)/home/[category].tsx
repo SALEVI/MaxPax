@@ -10,9 +10,19 @@ const DeviceDetailsScreen = () => {
   const categoryCapitalized = category.charAt(0).toUpperCase() + category.slice(1);
 
   const { data: sensor, error, isLoading } = useSensorList();
-  const [status, setStatus] = useState('off');
+  const [statusMap, setStatusMap] = useState({});
 
   const { mutate: updateSensor } = useUpdateSensor();
+
+  useEffect(() => {
+    if (sensor) {
+      const initialStatusMap = sensor.reduce((map, s) => {
+        map[s.id] = s.status;
+        return map;
+      }, {});
+      setStatusMap(initialStatusMap);
+    }
+  }, [sensor]);
 
   if (isLoading) {
     return (
@@ -27,12 +37,20 @@ const DeviceDetailsScreen = () => {
   }
 
   const toggleSwitch = (id) => {
-    setStatus(status === 'on' ? 'off' : 'on');
+    const newStatus = statusMap[id] === 'on' ? 'off' : 'on';
+    setStatusMap({ ...statusMap, [id]: newStatus });
     updateSensor(
-      { id, status },
+      { id, status: newStatus },
       {
         onSuccess: () => {
           console.log('success');
+        },
+        onError: () => {
+          // Revert the status if the update fails
+          setStatusMap((prevState) => ({
+            ...prevState,
+            [id]: prevState[id] === 'on' ? 'off' : 'on',
+          }));
         },
       }
     );
@@ -49,12 +67,11 @@ const DeviceDetailsScreen = () => {
           headerTintColor: isDarkMode ? 'white' : 'black',
         }}
       />
-      <View className=" min-h-full dark:bg-zinc-950">
-        {/* separator under the title */}
-        {/* <View className="mb-2 h-[1px] w-full bg-gray-600 " /> */}
+      <View className="min-h-full dark:bg-zinc-950">
         <View className="mx-5 mt-5 rounded-lg border border-zinc-800">
           {sensor
             .filter((sensor) => sensor.category === category)
+            .sort((a, b) => a.id - b.id) // Sort by id to maintain order
             .map((sensor) => (
               <View
                 key={sensor.id}
@@ -64,10 +81,10 @@ const DeviceDetailsScreen = () => {
                 </Text>
                 <Switch
                   trackColor={{ false: '#27272a', true: '#fafafa' }}
-                  thumbColor={sensor.status === 'on' ? '#09090b' : '#09090b'}
+                  thumbColor={statusMap[sensor.id] === 'on' ? '#09090b' : '#09090b'}
                   ios_backgroundColor="#27272a"
                   onValueChange={() => toggleSwitch(sensor.id)}
-                  value={sensor.status === 'on'}
+                  value={statusMap[sensor.id] === 'on'}
                   style={{ transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }], marginRight: 5 }}
                 />
               </View>

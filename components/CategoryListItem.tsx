@@ -7,7 +7,6 @@ const image = {
 };
 
 const CategoryListItem = ({ sensor }) => {
-  console.log(sensor);
   return (
     <Link
       href={{
