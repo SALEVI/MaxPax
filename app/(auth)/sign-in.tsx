@@ -1,5 +1,5 @@
 import { BlurView } from 'expo-blur';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, ImageBackground, Pressable, Text, TextInput, View } from 'react-native';
 
@@ -14,6 +14,8 @@ const SignInScreen = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const router = useRouter();
+
   async function signInWithEmail() {
     setError('');
     setLoading(true);
@@ -22,7 +24,11 @@ const SignInScreen = () => {
     if (error) {
       setError(error.message);
     }
+
     setLoading(false);
+    if (!error) {
+      router.push('/home');
+    }
   }
 
   return (
@@ -62,7 +68,6 @@ const SignInScreen = () => {
               {error}
             </Text>
 
-            {/*Move back inside the <Link> tag*/}
             <Pressable
               disabled={loading}
               onPress={signInWithEmail}
@@ -75,12 +80,13 @@ const SignInScreen = () => {
                 </Text>
               )}
             </Pressable>
-            <Link href="/home" asChild />
+
             <Link
               href="/sign-up"
               className="mt-2 items-center text-lg font-bold dark:text-lime-500">
               Create an account
             </Link>
+
           </View>
         </BlurView>
       </View>

@@ -1,5 +1,5 @@
 import { BlurView } from 'expo-blur';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
   ImageBackground,
@@ -7,8 +7,8 @@ import {
   Text,
   TextInput,
   View,
-  Alert,
   ActivityIndicator,
+  Button,
 } from 'react-native';
 
 import { supabase } from '~/utils/supabase';
@@ -21,6 +21,8 @@ const SignUpScreen = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const router = useRouter(); // Get the router instance
+
   async function signUpWithEmail() {
     setLoading(true);
     const { error } = await supabase.auth.signUp({ email, password });
@@ -28,6 +30,11 @@ const SignUpScreen = () => {
     if (error) {
       setError(error.message);
     }
+
+    if (!error) {
+      router.push('/sign-in');
+    }
+
     setLoading(false);
   }
 
@@ -81,7 +88,6 @@ const SignUpScreen = () => {
                 </Text>
               )}
             </Pressable>
-            <Link href="/home" asChild />
             <Link
               href="/sign-in"
               className="mt-2 items-center text-lg font-bold dark:text-lime-500">

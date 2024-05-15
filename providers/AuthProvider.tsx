@@ -5,11 +5,13 @@ import { supabase } from '~/utils/supabase';
 
 type AuthData = {
   session: Session | null;
+  profile: any;
   loading: boolean;
 };
 
 const AuthContext = createContext<AuthData>({
   session: null,
+  profile: null,
   loading: true,
 });
 
@@ -50,7 +52,9 @@ export default function AuthProvider({ children }: PropsWithChildren) {
 
   console.log(profile);
 
-  return <AuthContext.Provider value={{ session, loading }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ session, loading, profile }}>{children}</AuthContext.Provider>
+  );
 }
 
 export const useAuth = () => useContext(AuthContext);

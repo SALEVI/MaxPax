@@ -20,5 +20,5 @@ export default function App() {
     return <Redirect href="/sign-in" />;
   }
 
-  return <Redirect href="/sign-up" />;
+  return <Redirect href="/home" />;
 }
