@@ -1,20 +1,32 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
-import { View, Text, useColorScheme, Switch } from 'react-native';
+import { View, Text, useColorScheme, Switch, ActivityIndicator } from 'react-native';
 
-import devices from '~/assets/data/devices';
+import { useSensorCategory } from '~/api/sensors';
 
 const DeviceDetailsScreen = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const isDarkMode = useColorScheme() === 'dark';
-  const { category } = useLocalSearchParams();
+  const { category, id } = useLocalSearchParams();
+
   const categoryCapitalized = category.charAt(0).toUpperCase() + category.slice(1);
 
-  const device = devices.find((device) => device.category === category);
+  const { data: sensor, error, isLoading } = useSensorCategory(category);
 
-  if (!device) {
-    return <Text>Sensors not found</Text>;
+  if (isLoading) {
+    return (
+      <View className="flex-1 items-center justify-center dark:bg-black">
+        <ActivityIndicator size="large" color="#84cc16" />
+      </View>
+    );
   }
+
+  console.log(sensor);
+
+  if (error) {
+    return <Text>Failed to load data</Text>;
+  }
+
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
   return (
@@ -32,14 +44,14 @@ const DeviceDetailsScreen = () => {
         {/* separator under the title */}
         {/* <View className="mb-2 h-[1px] w-full bg-gray-600 " /> */}
         <View className="mx-5 mt-5 rounded-lg border border-zinc-800">
-          {devices
-            .filter((device) => device.category === category)
-            .map((device) => (
+          {sensor
+            .filter((sensor) => sensor.category === category)
+            .map((sensor) => (
               <View
-                key={device.id}
+                key={sensor.id}
                 className="flex flex-row items-center justify-between space-x-4 border-b border-zinc-800">
                 <Text className="rounded-md p-5 text-lg font-medium text-white">
-                  {device.name[0].toUpperCase() + device.name.slice(1)}
+                  {sensor.name[0].toUpperCase() + sensor.name.slice(1)} + id: {sensor.id}
                 </Text>
                 <Switch
                   trackColor={{ false: '#27272a', true: '#fafafa' }}

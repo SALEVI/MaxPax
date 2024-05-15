@@ -50,8 +50,6 @@ export default function AuthProvider({ children }: PropsWithChildren) {
     // This ensures the listener is removed when the component unmounts
   }, []);
 
-  console.log(profile);
-
   return (
     <AuthContext.Provider value={{ session, loading, profile }}>{children}</AuthContext.Provider>
   );

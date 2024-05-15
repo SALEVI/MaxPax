@@ -1,4 +1,4 @@
-import { Link, Stack, useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { StyleSheet, View, Text, Button } from 'react-native';
 
 import { useSensor } from '~/providers/SensorProvider';
