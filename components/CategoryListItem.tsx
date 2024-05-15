@@ -1,12 +1,34 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Link } from 'expo-router';
+import { useState, useEffect } from 'react';
 import { View, Text, ImageBackground, Pressable } from 'react-native';
 
 const image = {
   uri: 'https://th.bing.com/th/id/OIG2.WQoWQuuEZL4iNRkQceXu?pid=ImgGn',
 };
 
-const CategoryListItem = ({ sensor }) => {
+const CategoryListItem = ({ sensor, statusMap, toggleAllSensorsInCategory }) => {
+  const [isPressed, setIsPressed] = useState(false);
+  const [backgroundColor, setBackgroundColor] = useState('green');
+
+  useEffect(() => {
+    const sensorsInCategory = Object.keys(statusMap).filter(
+      (sensorId) => sensor.category === sensor.category
+    );
+    const allOff = sensorsInCategory.every((sensorId) => statusMap[sensorId] === 'off');
+
+    if (allOff) {
+      setBackgroundColor('red');
+    } else {
+      setBackgroundColor('green');
+    }
+  }, [statusMap]);
+
+  const handlePress = () => {
+    toggleAllSensorsInCategory(sensor.category);
+    setIsPressed(!isPressed);
+  };
+
   return (
     <Link
       href={{
@@ -24,7 +46,10 @@ const CategoryListItem = ({ sensor }) => {
                 </Text>
                 <Text className="text-sm text-slate-900 dark:text-zinc-200">{sensor.name}</Text>
               </View>
-              <Pressable className=" w-12 items-center justify-center rounded-full p-2 dark:bg-black">
+              <Pressable
+                onPress={handlePress}
+                style={{ backgroundColor: isPressed ? 'red' : backgroundColor }}
+                className="w-12 items-center justify-center rounded-full p-2 dark:bg-black">
                 <Ionicons name="power" size={28} color="white" />
               </Pressable>
             </View>

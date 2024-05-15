@@ -1,14 +1,13 @@
 import { MaterialIcons } from '@expo/vector-icons';
-import { useQuery } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
 import { remapProps } from 'nativewind';
+import { useEffect, useState } from 'react';
 import { View, FlatList, Text, ActivityIndicator } from 'react-native';
 
-import { useSensorList } from '~/api/sensors';
+import { useSensorList, useUpdateSensor } from '~/api/sensors';
 import CategoryListItem from '~/components/CategoryListItem';
-import { supabase } from '~/utils/supabase';
 
-//this might be unnecessary since of v4 nativewind
+// This might be unnecessary since of v4 nativewind
 remapProps(FlatList, {
   className: 'style',
   contentContainerClassName: 'contentContainerStyle',
@@ -17,6 +16,19 @@ remapProps(FlatList, {
 
 export default function Home() {
   const { data: sensors, error, isLoading } = useSensorList();
+  const { mutate: updateSensor } = useUpdateSensor();
+
+  const [statusMap, setStatusMap] = useState({});
+
+  useEffect(() => {
+    if (sensors) {
+      const initialStatusMap = sensors.reduce((map, sensor) => {
+        map[sensor.id] = sensor.status;
+        return map;
+      }, {});
+      setStatusMap(initialStatusMap);
+    }
+  }, [sensors]);
 
   if (isLoading) {
     return <ActivityIndicator size="large" color="#84cc16" />;
@@ -29,18 +41,32 @@ export default function Home() {
   // Sort sensors by id before reducing to unique categories
   const sortedSensors = sensors.sort((a, b) => a.id - b.id);
 
-  const uniqueCategories = sortedSensors.reduce((acc, sensors) => {
-    const categoryExists = acc.find((item) => item.category === sensors.category);
+  const uniqueCategories = sortedSensors.reduce((acc, sensor) => {
+    const categoryExists = acc.find((item) => item.category === sensor.category);
     if (!categoryExists) {
-      acc.push(sensors);
+      acc.push(sensor);
     }
     return acc;
   }, []);
 
+  const toggleAllSensorsInCategory = (category) => {
+    const updatedStatusMap = { ...statusMap };
+    const sensorsInCategory = sortedSensors.filter((sensor) => sensor.category === category);
+    const allOff = sensorsInCategory.every((sensor) => statusMap[sensor.id] === 'off');
+
+    sensorsInCategory.forEach((sensor) => {
+      const newStatus = allOff ? 'on' : 'off';
+      updatedStatusMap[sensor.id] = newStatus;
+      updateSensor({ id: sensor.id, status: newStatus });
+    });
+
+    setStatusMap(updatedStatusMap);
+  };
+
   return (
     <>
       <Stack.Screen options={{ title: 'Home' }} />
-      {/*Maybe redo this into a Header component*/}
+      {/* Maybe redo this into a Header component */}
       <View className="flex-1 dark:bg-black">
         <View className="min-h-72 w-full pl-5 pt-12 dark:bg-lime-500">
           <Text className="text-3xl font-medium">Your home is</Text>
@@ -54,7 +80,13 @@ export default function Home() {
           <FlatList
             contentContainerClassName="flex-grow flex-row flex-wrap justify-around gap-4 p-5 mt-10"
             data={uniqueCategories}
-            renderItem={({ item }) => <CategoryListItem sensor={item} />}
+            renderItem={({ item }) => (
+              <CategoryListItem
+                sensor={item}
+                statusMap={statusMap}
+                toggleAllSensorsInCategory={toggleAllSensorsInCategory}
+              />
+            )}
             numColumns={2}
             columnWrapperClassName="gap-4"
           />
