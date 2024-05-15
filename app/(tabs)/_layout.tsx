@@ -1,11 +1,18 @@
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { Link, Tabs } from 'expo-router';
+import { Link, Redirect, Tabs } from 'expo-router';
 import { useColorScheme } from 'react-native';
 
 import { HeaderButton } from '../../components/HeaderButton';
 
+import { useAuth } from '~/providers/AuthProvider';
+
 export default function TabLayout() {
+  const { session } = useAuth();
   const isDarkMode = useColorScheme() === 'dark';
+
+  if (!session) {
+    return <Redirect href="/" />;
+  }
 
   return (
     <Tabs

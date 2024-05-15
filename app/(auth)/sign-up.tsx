@@ -1,7 +1,17 @@
 import { BlurView } from 'expo-blur';
 import { Link } from 'expo-router';
 import { useState } from 'react';
-import { ImageBackground, Pressable, Text, TextInput, View } from 'react-native';
+import {
+  ImageBackground,
+  Pressable,
+  Text,
+  TextInput,
+  View,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
+
+import { supabase } from '~/utils/supabase';
 
 const background = { uri: 'https://w.wallhaven.cc/full/72/wallhaven-72oomo.jpg' };
 
@@ -9,24 +19,17 @@ const SignUpScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const validateInput = () => {
-    setError('');
-    if (!email) {
-      setError('Email is required');
-      return false;
-    }
-    if (!password) {
-      setError('Password is required');
-      return false;
-    }
-    return true;
-  };
+  async function signUpWithEmail() {
+    setLoading(true);
+    const { error } = await supabase.auth.signUp({ email, password });
 
-  const onLogin = () => {
-    if (!validateInput()) {
+    if (error) {
+      setError(error.message);
     }
-  };
+    setLoading(false);
+  }
 
   return (
     <ImageBackground source={background} resizeMode="cover" className="flex-1">
@@ -57,23 +60,30 @@ const SignUpScreen = () => {
               onChangeText={setPassword}
               numberOfLines={1}
               cursorColor="#84cc16"
-              keyboardType="visible-password"
               autoComplete="password"
               placeholder="Enter your password"
-              className="mb-5 min-h-16 w-11/12 rounded-lg border border-lime-500 pl-4 text-lg font-semibold dark:bg-zinc-200 dark:text-zinc-900"
+              className=" min-h-16 w-11/12 rounded-lg border border-lime-500 pl-4 text-lg font-semibold dark:bg-zinc-200 dark:text-zinc-900"
             />
-            <Text className="text-red-500">{error}</Text>
-            <Link href="/home" asChild>
-              <Pressable
-                onPress={onLogin}
-                className="mb-5 min-h-16 w-11/12 items-center justify-center rounded-lg font-bold dark:bg-lime-500">
+            <Text className=" text-red-500" style={{ marginVertical: error !== '' ? 20 : 0 }}>
+              {error}
+            </Text>
+
+            {/*Move back inside the <Link> tag*/}
+            <Pressable
+              disabled={loading}
+              onPress={signUpWithEmail}
+              className="mb-5 min-h-16 w-11/12 items-center justify-center rounded-lg font-bold dark:bg-lime-500">
+              {loading ? (
+                <ActivityIndicator size="large" color="white" />
+              ) : (
                 <Text className="text-2xl font-extrabold antialiased dark:text-zinc-200">
-                  Sign up
+                  Create account
                 </Text>
-              </Pressable>
-            </Link>
+              )}
+            </Pressable>
+            <Link href="/home" asChild />
             <Link
-              href="/sign-up"
+              href="/sign-in"
               className="mt-2 items-center text-lg font-bold dark:text-lime-500">
               Sign in
             </Link>

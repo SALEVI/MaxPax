@@ -1,25 +1,24 @@
 import { Redirect } from 'expo-router';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
 
+import { useAuth } from '~/providers/AuthProvider';
+
 export default function App() {
-  const [isLoading, setIsLoading] = useState(true);
+  const { session, loading } = useAuth();
 
-  useEffect(() => {
-    // Simulate a delay or perform any initialization tasks here
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000); // Adjust the delay as needed
-  }, []);
-
-  if (isLoading) {
+  if (loading) {
     return (
       <View className="flex-1 items-center justify-center dark:bg-black">
         <ActivityIndicator size="large" color="#84cc16" />
-        <Text className="mt-2 text-3xl font-bold dark:text-white">Welcome</Text>
+        <Text className="mt-2 text-3xl font-bold dark:text-white">Loading</Text>
       </View>
     );
   }
 
-  return <Redirect href="/sign-in" />;
+  if (!session) {
+    return <Redirect href="/sign-in" />;
+  }
+
+  return <Redirect href="/sign-up" />;
 }
