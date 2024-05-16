@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, ActivityIndicator, FlatList } from 'react-native';
+import { View, Text, ActivityIndicator, FlatList } from 'react-native';
 
 import { useNotificationList } from '~/api/notifications';
 import { useInsertNotificationListener } from '~/api/notifications/subscriptions';
@@ -28,6 +28,7 @@ export default function NotificationsScreen() {
           className="mt-3"
           data={notifications}
           renderItem={({ item }) => <NotificationListItem notification={item} />}
+          keyExtractor={(item) => item.id.toString()}
         />
       </View>
     </>

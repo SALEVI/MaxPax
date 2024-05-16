@@ -41,7 +41,7 @@ export const useInsertNotification = () => {
     },
     async onSuccess() {
       console.log('success: notification added');
-      // await queryClient.invalidateQueries(['notifications']);
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
     },
     onError(error) {
       console.log(error);

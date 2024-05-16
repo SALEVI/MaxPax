@@ -23,14 +23,15 @@ const SensorsScreen = () => {
   }
 
   const toggleSwitch = (id: number) => {
-    // Ensure sensor exists before proceeding
     if (!sensors) return;
 
-    const currentStatus = sensors.find((sensor) => sensor.id === id)?.status || 'off'; // Get the current status of the sensor
-    const newStatus = currentStatus === 'on' ? 'off' : 'on'; // Toggle the status
-    setIsEnabled(newStatus === 'on'); // Update isEnabled based on the new status
+    const currentSensor = sensors.find((sensor) => sensor.id === id);
+    if (!currentSensor) return;
 
-    // Update the sensor status optimistically
+    const newStatus = currentSensor.status === 'on' ? 'off' : 'on';
+    setIsEnabled(newStatus === 'on');
+
+    // Optimistically update the sensor status
     updateSensor(
       { id, status: newStatus },
       {
@@ -39,14 +40,14 @@ const SensorsScreen = () => {
         },
         onError: () => {
           // Revert the status if the update fails
-          setIsEnabled(currentStatus === 'on'); // Revert isEnabled to the previous status
+          setIsEnabled(currentSensor.status === 'on');
         },
       }
     );
   };
 
   // Group devices by category
-  const groupedSensors = (sensors || []).reduce((acc: { [key: string]: any }, sensor) => {
+  const groupedSensors = (sensors || []).reduce((acc, sensor) => {
     const category = sensor.category;
     if (!acc[category]) {
       acc[category] = [];
@@ -56,38 +57,30 @@ const SensorsScreen = () => {
   }, {});
 
   return (
-    <View>
-      <View className=" min-h-full dark:bg-black ">
-        {/* rounded-lg border border-zinc-800 optional styling for the View below */}
-        <View className="mx-5 mt-5 rounded-lg border border-zinc-800 ">
-          {/* Map through unique categories */}
-          {Object.keys(groupedSensors).map((category) => (
-            <View key={category} className="mb-2">
-              <Text className="rounded-md border-t border-zinc-800 p-4 text-xl font-bold dark:text-white">
-                {category[0].toUpperCase() + category.slice(1)}
-              </Text>
-              {/* Map through devices for the current category */}
-              {groupedSensors[category].map(
-                (sensor: { id: number; name: string; status: string }) => (
-                  <View key={sensor.id} className="flex flex-row items-center justify-between ">
-                    <Text className="rounded-md p-4 text-lg font-medium dark:text-zinc-300">
-                      {sensor.name[0].toUpperCase() + sensor.name.slice(1)}
-                    </Text>
-                    <Switch
-                      // disabled={isEnabled}
-                      trackColor={{ false: '#27272a', true: '#fafafa' }}
-                      thumbColor={sensor.status === 'on' ? '#09090b' : '#09090b'}
-                      ios_backgroundColor="#27272a"
-                      onValueChange={() => toggleSwitch(sensor.id)} // Pass the id to toggleSwitch
-                      value={sensor.status === 'on'}
-                      style={{ transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }], marginRight: 5 }}
-                    />
-                  </View>
-                )
-              )}
-            </View>
-          ))}
-        </View>
+    <View className="flex-1 dark:bg-black">
+      <View className="mx-5 mt-5 rounded-lg border border-zinc-800">
+        {Object.keys(groupedSensors).map((category) => (
+          <View key={category} className="mb-2">
+            <Text className="rounded-md border-t border-zinc-800 p-4 text-xl font-bold dark:text-white">
+              {category[0].toUpperCase() + category.slice(1)}
+            </Text>
+            {groupedSensors[category].map((sensor) => (
+              <View key={sensor.id} className="flex flex-row items-center justify-between">
+                <Text className="rounded-md p-4 text-lg font-medium dark:text-zinc-300">
+                  {sensor.name[0].toUpperCase() + sensor.name.slice(1)}
+                </Text>
+                <Switch
+                  trackColor={{ false: '#27272a', true: '#fafafa' }}
+                  thumbColor={sensor.status === 'on' ? '#09090b' : '#09090b'}
+                  ios_backgroundColor="#27272a"
+                  onValueChange={() => toggleSwitch(sensor.id)}
+                  value={sensor.status === 'on'}
+                  style={{ transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }], marginRight: 5 }}
+                />
+              </View>
+            ))}
+          </View>
+        ))}
       </View>
     </View>
   );

@@ -1,11 +1,9 @@
 import { Tables } from 'database.types';
 import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import { BlurView } from 'expo-blur';
 import { useSegments } from 'expo-router';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
 
 // dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);
@@ -16,8 +14,6 @@ type NotificationListItemProps = {
 
 const NotificationListItem = ({ notification }: NotificationListItemProps) => {
   const segments = useSegments();
-
-  const statusColor = notification.status === 'on' ? 'text-lime-500' : 'text-red-500';
 
   return (
     <View className="mx-5 mb-3 flex flex-row items-center justify-between rounded-md border border-zinc-800 p-5">
