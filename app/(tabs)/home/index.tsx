@@ -5,7 +5,9 @@ import { useEffect, useState } from 'react';
 import { View, FlatList, Text, ActivityIndicator } from 'react-native';
 
 import { useSensorList, useUpdateSensor } from '~/api/sensors';
+import { useUpdateSensorListener } from '~/api/sensors/subscriptions';
 import CategoryListItem from '~/components/CategoryListItem';
+import { notifyUser } from '~/utils/notifications';
 // import { Tables } from '~/database.types';
 // import { Tables } from '~/types';
 
@@ -21,6 +23,30 @@ export default function Home() {
   const { mutate: updateSensor } = useUpdateSensor();
 
   const [statusMap, setStatusMap] = useState<{ [key: number]: string }>({});
+
+  useUpdateSensorListener();
+
+  useEffect(() => {
+    // Check status changes when sensor data changes
+    if (sensors) {
+      sensors.forEach((s) => {
+        const previousStatus = statusMap[s.id];
+        const currentStatus = s.status;
+
+        // Check if status has changed
+        if (previousStatus && previousStatus !== currentStatus) {
+          // Send notification when status changes
+          notifyUser(s.name, s.status);
+        }
+
+        // Update status map
+        setStatusMap((prevState) => ({
+          ...prevState,
+          [s.id]: currentStatus,
+        }));
+      });
+    }
+  }, [sensors]);
 
   useEffect(() => {
     if (sensors) {

@@ -4,6 +4,7 @@ import { View, Text, useColorScheme, Switch, ActivityIndicator } from 'react-nat
 
 import { useSensorList, useUpdateSensor } from '~/api/sensors';
 import { useUpdateSensorListener } from '~/api/sensors/subscriptions';
+import { notifyUser } from '~/utils/notifications';
 
 const DeviceDetailsScreen = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -23,6 +24,40 @@ const DeviceDetailsScreen = () => {
         return map;
       }, {});
       setStatusMap(initialStatusMap);
+    }
+  }, [sensor]);
+
+  useEffect(() => {
+    // Check sensor value when it changes
+    if (sensor) {
+      sensor.forEach((s) => {
+        if (s.value > 3000) {
+          // Send notification when value exceeds 4000
+          notifyUser(s.name, s.value);
+        }
+      });
+    }
+  }, [sensor]);
+
+  useEffect(() => {
+    // Check status changes when sensor data changes
+    if (sensor) {
+      sensor.forEach((s) => {
+        const previousStatus = statusMap[s.id];
+        const currentStatus = s.status;
+
+        // Check if status has changed
+        if (previousStatus && previousStatus !== currentStatus) {
+          // Send notification when status changes
+          notifyUser(s.name, s.status);
+        }
+
+        // Update status map
+        setStatusMap((prevState) => ({
+          ...prevState,
+          [s.id]: currentStatus,
+        }));
+      });
     }
   }, [sensor]);
 

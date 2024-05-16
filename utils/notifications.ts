@@ -3,6 +3,10 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 
+import { supabase } from './supabase';
+
+import { Tables } from '~/database.types';
+
 function handleRegistrationError(errorMessage: string) {
   alert(errorMessage);
   throw new Error(errorMessage);
@@ -49,12 +53,12 @@ export async function registerForPushNotificationsAsync() {
   }
 }
 
-export async function sendPushNotification(expoPushToken: string) {
+export async function sendPushNotification(expoPushToken: string, title: string, body: string) {
   const message = {
     to: expoPushToken,
     sound: 'default',
-    title: 'Original Title',
-    body: 'And here is the body!',
+    title,
+    body,
     data: { someData: 'goes here' },
   };
 
@@ -68,3 +72,11 @@ export async function sendPushNotification(expoPushToken: string) {
     body: JSON.stringify(message),
   });
 }
+
+export const notifyUser = async (name: string, status: number | null | string) => {
+  const token = 'ExponentPushToken[DN5ciOHPJ0Pmb6VKtXKAab]';
+  console.log(name);
+  const title = `Sensor ${name}`;
+  const body = `has turned ${status}`;
+  sendPushNotification(token, title, body);
+};
