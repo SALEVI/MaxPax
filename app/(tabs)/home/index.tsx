@@ -6,6 +6,8 @@ import { View, FlatList, Text, ActivityIndicator } from 'react-native';
 
 import { useSensorList, useUpdateSensor } from '~/api/sensors';
 import CategoryListItem from '~/components/CategoryListItem';
+// import { Tables } from '~/database.types';
+// import { Tables } from '~/types';
 
 // This might be unnecessary since of v4 nativewind
 remapProps(FlatList, {
@@ -84,7 +86,7 @@ export default function Home() {
               <CategoryListItem
                 sensor={item}
                 statusMap={statusMap}
-                toggleAllSensorsInCategory={toggleAllSensorsInCategory}
+                toggleAllSensorsInCategory={toggleAllSensorsInCategory} // Pass the function here
               />
             )}
             numColumns={2}
