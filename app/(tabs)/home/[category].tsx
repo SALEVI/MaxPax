@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, useColorScheme, Switch, ActivityIndicator } from 'react-native';
 
 import { useSensorList, useUpdateSensor } from '~/api/sensors';
+import { useUpdateSensorListener } from '~/api/sensors/subscriptions';
 
 const DeviceDetailsScreen = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -12,6 +13,8 @@ const DeviceDetailsScreen = () => {
   const [statusMap, setStatusMap] = useState<{ [key: number]: string }>({});
   const { data: sensor, error, isLoading } = useSensorList();
   const { mutate: updateSensor } = useUpdateSensor();
+
+  useUpdateSensorListener();
 
   useEffect(() => {
     if (sensor) {
@@ -76,7 +79,7 @@ const DeviceDetailsScreen = () => {
                 key={s.id}
                 className="flex flex-row items-center justify-between space-x-4 border-b border-zinc-800">
                 <Text className="rounded-md p-5 text-lg font-medium text-white">
-                  {s.name[0].toUpperCase() + s.name.slice(1)} + id: {s.id}
+                  {s.name[0].toUpperCase() + s.name.slice(1)} + id: {s.id} + value {s.value}
                 </Text>
                 <Switch
                   trackColor={{ false: '#27272a', true: '#fafafa' }}
