@@ -7,16 +7,15 @@ import { useSensorList, useUpdateSensor } from '~/api/sensors';
 const DeviceDetailsScreen = () => {
   const isDarkMode = useColorScheme() === 'dark';
   const { category } = useLocalSearchParams();
-  const categoryCapitalized = category.charAt(0).toUpperCase() + category.slice(1);
-
+  const categoryCapitalized =
+    (category as string)?.charAt(0)?.toUpperCase() + (category as string)?.slice(1);
+  const [statusMap, setStatusMap] = useState<{ [key: number]: string }>({});
   const { data: sensor, error, isLoading } = useSensorList();
-  const [statusMap, setStatusMap] = useState({});
-
   const { mutate: updateSensor } = useUpdateSensor();
 
   useEffect(() => {
     if (sensor) {
-      const initialStatusMap = sensor.reduce((map, s) => {
+      const initialStatusMap = sensor.reduce((map: { [key: number]: string }, s) => {
         map[s.id] = s.status;
         return map;
       }, {});
@@ -36,7 +35,7 @@ const DeviceDetailsScreen = () => {
     return <Text>Failed to load data</Text>;
   }
 
-  const toggleSwitch = (id) => {
+  const toggleSwitch = (id: number) => {
     const newStatus = statusMap[id] === 'on' ? 'off' : 'on';
     setStatusMap({ ...statusMap, [id]: newStatus });
     updateSensor(
@@ -70,21 +69,21 @@ const DeviceDetailsScreen = () => {
       <View className="min-h-full dark:bg-zinc-950">
         <View className="mx-5 mt-5 rounded-lg border border-zinc-800">
           {sensor
-            .filter((sensor) => sensor.category === category)
+            ?.filter((s) => s.category === category)
             .sort((a, b) => a.id - b.id) // Sort by id to maintain order
-            .map((sensor) => (
+            .map((s) => (
               <View
-                key={sensor.id}
+                key={s.id}
                 className="flex flex-row items-center justify-between space-x-4 border-b border-zinc-800">
                 <Text className="rounded-md p-5 text-lg font-medium text-white">
-                  {sensor.name[0].toUpperCase() + sensor.name.slice(1)} + id: {sensor.id}
+                  {s.name[0].toUpperCase() + s.name.slice(1)} + id: {s.id}
                 </Text>
                 <Switch
                   trackColor={{ false: '#27272a', true: '#fafafa' }}
-                  thumbColor={statusMap[sensor.id] === 'on' ? '#09090b' : '#09090b'}
+                  thumbColor={statusMap[s.id] === 'on' ? '#09090b' : '#09090b'}
                   ios_backgroundColor="#27272a"
-                  onValueChange={() => toggleSwitch(sensor.id)}
-                  value={statusMap[sensor.id] === 'on'}
+                  onValueChange={() => toggleSwitch(s.id)}
+                  value={statusMap[s.id] === 'on'}
                   style={{ transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }], marginRight: 5 }}
                 />
               </View>

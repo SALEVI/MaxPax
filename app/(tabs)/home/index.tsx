@@ -20,11 +20,11 @@ export default function Home() {
   const { data: sensors, error, isLoading } = useSensorList();
   const { mutate: updateSensor } = useUpdateSensor();
 
-  const [statusMap, setStatusMap] = useState({});
+  const [statusMap, setStatusMap] = useState<{ [key: number]: string }>({});
 
   useEffect(() => {
     if (sensors) {
-      const initialStatusMap = sensors.reduce((map, sensor) => {
+      const initialStatusMap = sensors.reduce((map: { [key: number]: string }, sensor) => {
         map[sensor.id] = sensor.status;
         return map;
       }, {});
@@ -41,17 +41,33 @@ export default function Home() {
   }
 
   // Sort sensors by id before reducing to unique categories
-  const sortedSensors = sensors.sort((a, b) => a.id - b.id);
+  // Keep track of unique categories using an object
+  const categoryMap: { [key: string]: boolean } = {};
 
-  const uniqueCategories = sortedSensors.reduce((acc, sensor) => {
-    const categoryExists = acc.find((item) => item.category === sensor.category);
-    if (!categoryExists) {
+  // Sort sensors by id
+  const sortedSensors = (sensors || []).sort((a, b) => a.id - b.id);
+
+  // Get unique categories
+  const uniqueCategories = sortedSensors.reduce<
+    {
+      category: string;
+      created_at: string;
+      id: number;
+      name: string;
+      status: string;
+      value: number | null;
+    }[]
+  >((acc, sensor) => {
+    // Check if the category already exists
+    if (!categoryMap[sensor.category]) {
+      // If it doesn't exist, add it to the result array and mark it as seen
       acc.push(sensor);
+      categoryMap[sensor.category] = true;
     }
     return acc;
   }, []);
 
-  const toggleAllSensorsInCategory = (category) => {
+  const toggleAllSensorsInCategory = (category: string) => {
     const updatedStatusMap = { ...statusMap };
     const sensorsInCategory = sortedSensors.filter((sensor) => sensor.category === category);
     const allOff = sensorsInCategory.every((sensor) => statusMap[sensor.id] === 'off');

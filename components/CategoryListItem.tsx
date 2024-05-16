@@ -1,10 +1,9 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Link } from 'expo-router';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { View, Text, ImageBackground, Pressable } from 'react-native';
-
-// import { Tables } from '~/database.types';
 import { Tables } from 'types';
+// import { Tables } from '~/database.types';
 
 const image = {
   uri: 'https://th.bing.com/th/id/OIG2.WQoWQuuEZL4iNRkQceXu?pid=ImgGn',
@@ -20,28 +19,9 @@ const CategoryListItem = ({
   sensor,
   statusMap,
   toggleAllSensorsInCategory,
-}: {
-  sensor: Tables<'sensor_data'>;
-  statusMap: { [key: string]: string };
-  toggleAllSensorsInCategory: (category: string) => void;
-}) => {
+}: CategoryListItemProps) => {
   // Your component logic here
   const [isPressed, setIsPressed] = useState(false);
-  const [backgroundColor, setBackgroundColor] = useState('#84cc16');
-
-  useEffect(() => {
-    const sensorsInCategory = Object.keys(statusMap).filter(
-      (sensorId) => sensor.category === sensor.category
-    );
-    const allOff = sensorsInCategory.every((sensorId) => statusMap[sensorId] === 'off');
-
-    if (allOff) {
-      setBackgroundColor('red');
-    } else {
-      setBackgroundColor('#84cc16');
-    }
-  }, [statusMap]);
-
   const handlePress = () => {
     toggleAllSensorsInCategory(sensor.category);
     setIsPressed(!isPressed);
@@ -66,8 +46,7 @@ const CategoryListItem = ({
               </View>
               <Pressable
                 onPress={handlePress}
-                style={{ backgroundColor: isPressed ? 'red' : backgroundColor }}
-                className="w-12 items-center justify-center rounded-full p-2 dark:bg-black">
+                className="w-12 items-center justify-center rounded-full p-2 dark:bg-lime-500">
                 <Ionicons name="power" size={28} color="black" />
               </Pressable>
             </View>

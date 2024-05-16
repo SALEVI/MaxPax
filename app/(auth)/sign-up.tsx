@@ -1,15 +1,7 @@
 import { BlurView } from 'expo-blur';
 import { Link, useRouter } from 'expo-router';
 import { useState } from 'react';
-import {
-  ImageBackground,
-  Pressable,
-  Text,
-  TextInput,
-  View,
-  ActivityIndicator,
-  Button,
-} from 'react-native';
+import { ImageBackground, Pressable, Text, TextInput, View, ActivityIndicator } from 'react-native';
 
 import { supabase } from '~/utils/supabase';
 
