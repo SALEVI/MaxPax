@@ -1,7 +1,9 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Link } from 'expo-router';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, ImageBackground, Pressable } from 'react-native';
+
+// import { Tables } from '~/database.types';
 import { Tables } from 'types';
 
 const image = {
@@ -18,27 +20,41 @@ const CategoryListItem = ({
   sensor,
   statusMap,
   toggleAllSensorsInCategory,
-}: CategoryListItemProps) => {
+}: {
+  sensor: Tables<'sensor_data'>;
+  statusMap: { [key: string]: string };
+  toggleAllSensorsInCategory: (category: string) => void;
+}) => {
+  // Your component logic here
+  const [isPressed, setIsPressed] = useState(false);
+  const [backgroundColor, setBackgroundColor] = useState('#84cc16');
+
   useEffect(() => {
     const sensorsInCategory = Object.keys(statusMap).filter(
       (sensorId) => sensor.category === sensor.category
     );
     const allOff = sensorsInCategory.every((sensorId) => statusMap[sensorId] === 'off');
-    // Update background color based on status
-    // You can add your logic here
+
+    if (allOff) {
+      setBackgroundColor('red');
+    } else {
+      setBackgroundColor('#84cc16');
+    }
   }, [statusMap]);
 
   const handlePress = () => {
     toggleAllSensorsInCategory(sensor.category);
+    setIsPressed(!isPressed);
   };
 
   return (
     <Link
       href={{
         pathname: `/home/${sensor.category}`,
+        // params: { id: sensor.id },
       }}
       asChild>
-      <Pressable onPress={handlePress}>
+      <Pressable>
         <ImageBackground source={image} resizeMode="cover" imageStyle={{ borderRadius: 16 }}>
           <View className="min-h-48 min-w-48 basis-1/4 rounded-2xl bg-black/15 backdrop-blur-sm dark:bg-black/45">
             <View className="flex-1 justify-between p-4">
@@ -49,7 +65,8 @@ const CategoryListItem = ({
                 <Text className="text-sm text-slate-900 dark:text-zinc-200">{sensor.name}</Text>
               </View>
               <Pressable
-                style={{ backgroundColor: '#84cc16' }} // Set the initial background color
+                onPress={handlePress}
+                style={{ backgroundColor: isPressed ? 'red' : backgroundColor }}
                 className="w-12 items-center justify-center rounded-full p-2 dark:bg-black">
                 <Ionicons name="power" size={28} color="black" />
               </Pressable>
