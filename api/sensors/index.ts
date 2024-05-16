@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+// import { TablesUpdate } from '~/database.types';
+import { UpdateTables } from '~/types';
 import { supabase } from '~/utils/supabase';
 
 export const useSensorList = () => {
@@ -16,11 +18,15 @@ export const useSensorList = () => {
   });
 };
 
-export const useSensor = (id: number) => {
+export const useSensor = (id?: number) => {
   return useQuery({
     queryKey: ['sensors', id],
     queryFn: async () => {
-      const { data, error } = await supabase.from('sensor_data').select('*').eq('id', id);
+      let query = supabase.from('sensor_data').select('*');
+      if (id !== undefined) {
+        query = query.eq('id', id);
+      }
+      const { data, error } = await query;
       if (error) {
         throw new Error(error.message);
       }
@@ -49,7 +55,14 @@ export const useUpdateSensor = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    async mutationFn(data: any) {
+    async mutationFn(data: UpdateTables<'sensor_data'>) {
+      // with destructioning data.id -> id
+      // const { id } = data;
+
+      if (data.id === undefined) {
+        throw new Error('ID is undefined');
+      }
+
       const { error, data: updatedSensor } = await supabase
         .from('sensor_data')
         .update({
