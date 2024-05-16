@@ -3,9 +3,40 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export type Database = {
   public: {
     Tables: {
+      notifications: {
+        Row: {
+          body: string | null;
+          created_at: string;
+          id: number;
+          name: string;
+          status: string;
+          title: string;
+          value: number | null;
+        };
+        Insert: {
+          body?: string | null;
+          created_at?: string;
+          id?: number;
+          name: string;
+          status?: string;
+          title: string;
+          value?: number | null;
+        };
+        Update: {
+          body?: string | null;
+          created_at?: string;
+          id?: number;
+          name?: string;
+          status?: string;
+          title?: string;
+          value?: number | null;
+        };
+        Relationships: [];
+      };
       profiles: {
         Row: {
           avatar_url: string | null;
+          expo_push_token: string | null;
           full_name: string | null;
           id: string;
           updated_at: string | null;
@@ -14,6 +45,7 @@ export type Database = {
         };
         Insert: {
           avatar_url?: string | null;
+          expo_push_token?: string | null;
           full_name?: string | null;
           id: string;
           updated_at?: string | null;
@@ -22,6 +54,7 @@ export type Database = {
         };
         Update: {
           avatar_url?: string | null;
+          expo_push_token?: string | null;
           full_name?: string | null;
           id?: string;
           updated_at?: string | null;

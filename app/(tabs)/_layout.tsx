@@ -54,6 +54,42 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <MaterialIcons name="sensors" size={28} color={color} />,
         }}
       />
+      <Tabs.Screen name="notificationsScreen" options={{ href: null }} />
+      <Tabs.Screen
+        name="notifications"
+        options={{
+          tabBarShowLabel: false,
+          tabBarStyle: { backgroundColor: isDarkMode ? 'black' : 'white' },
+          title: 'Notifications',
+          headerStyle: {
+            backgroundColor: isDarkMode ? 'black' : 'white',
+          },
+          headerTintColor: isDarkMode ? 'white' : 'black',
+          tabBarIcon: ({ color }) => <MaterialIcons name="notifications" size={28} color={color} />,
+          headerLeft: () => (
+            <MaterialIcons
+              name="notifications"
+              size={24}
+              color="white"
+              className="ml-5 items-center"
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen name="settingsScreen" options={{ href: null }} />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          tabBarShowLabel: false,
+          tabBarStyle: { backgroundColor: isDarkMode ? 'black' : 'white' },
+          title: 'Settings',
+          headerStyle: {
+            backgroundColor: isDarkMode ? 'black' : 'white',
+          },
+          headerTintColor: isDarkMode ? 'white' : 'black',
+          tabBarIcon: ({ color }) => <MaterialIcons name="settings" size={28} color={color} />,
+        }}
+      />
     </Tabs>
   );
 }

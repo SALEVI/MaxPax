@@ -74,7 +74,7 @@ const SensorsScreen = () => {
                       {sensor.name[0].toUpperCase() + sensor.name.slice(1)}
                     </Text>
                     <Switch
-                      disabled={isEnabled}
+                      // disabled={isEnabled}
                       trackColor={{ false: '#27272a', true: '#fafafa' }}
                       thumbColor={sensor.status === 'on' ? '#09090b' : '#09090b'}
                       ios_backgroundColor="#27272a"

@@ -2,6 +2,7 @@ import { Stack, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { View, Text, useColorScheme, Switch, ActivityIndicator } from 'react-native';
 
+import { useInsertNotification } from '~/api/notifications';
 import { useSensorList, useUpdateSensor } from '~/api/sensors';
 import { useUpdateSensorListener } from '~/api/sensors/subscriptions';
 import { notifyUser } from '~/utils/notifications';
@@ -14,6 +15,7 @@ const DeviceDetailsScreen = () => {
   const [statusMap, setStatusMap] = useState<{ [key: number]: string }>({});
   const { data: sensor, error, isLoading } = useSensorList();
   const { mutate: updateSensor } = useUpdateSensor();
+  const { mutate: insertNotification } = useInsertNotification();
 
   useUpdateSensorListener();
 
@@ -27,6 +29,7 @@ const DeviceDetailsScreen = () => {
     }
   }, [sensor]);
 
+  //Maybe move to home/index implement id based conditional logic
   useEffect(() => {
     // Check sensor value when it changes
     if (sensor) {
@@ -39,27 +42,36 @@ const DeviceDetailsScreen = () => {
     }
   }, [sensor]);
 
-  useEffect(() => {
-    // Check status changes when sensor data changes
-    if (sensor) {
-      sensor.forEach((s) => {
-        const previousStatus = statusMap[s.id];
-        const currentStatus = s.status;
+  // useEffect(() => {
+  //   // Check status changes when sensor data changes
+  //   if (sensor) {
+  //     sensor.forEach((s) => {
+  //       const previousStatus = statusMap[s.id];
+  //       const currentStatus = s.status;
 
-        // Check if status has changed
-        if (previousStatus && previousStatus !== currentStatus) {
-          // Send notification when status changes
-          notifyUser(s.name, s.status);
-        }
+  //       // Check if status has changed
+  //       if (previousStatus && previousStatus !== currentStatus) {
+  //         const title = `${s.name.charAt(0).toUpperCase()}${s.name.slice(1)} sensor`;
+  //         const body = `has turned ${s.status}`;
+  //         // Send notification when status changes
+  //         notifyUser(title, body);
+  //         insertNotification({
+  //           title,
+  //           body,
+  //           name: s.name,
+  //           status: s.status,
+  //           value: s.value,
+  //         });
+  //       }
 
-        // Update status map
-        setStatusMap((prevState) => ({
-          ...prevState,
-          [s.id]: currentStatus,
-        }));
-      });
-    }
-  }, [sensor]);
+  //       // Update status map
+  //       setStatusMap((prevState) => ({
+  //         ...prevState,
+  //         [s.id]: currentStatus,
+  //       }));
+  //     });
+  //   }
+  // }, [sensor]);
 
   if (isLoading) {
     return (

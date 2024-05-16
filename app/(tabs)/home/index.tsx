@@ -4,6 +4,7 @@ import { remapProps } from 'nativewind';
 import { useEffect, useState } from 'react';
 import { View, FlatList, Text, ActivityIndicator } from 'react-native';
 
+import { useInsertNotification } from '~/api/notifications';
 import { useSensorList, useUpdateSensor } from '~/api/sensors';
 import { useUpdateSensorListener } from '~/api/sensors/subscriptions';
 import CategoryListItem from '~/components/CategoryListItem';
@@ -21,9 +22,11 @@ remapProps(FlatList, {
 export default function Home() {
   const { data: sensors, error, isLoading } = useSensorList();
   const { mutate: updateSensor } = useUpdateSensor();
+  const { mutate: insertNotification } = useInsertNotification();
 
   const [statusMap, setStatusMap] = useState<{ [key: number]: string }>({});
 
+  //After loging in always looking for notifications
   useUpdateSensorListener();
 
   useEffect(() => {
@@ -35,8 +38,17 @@ export default function Home() {
 
         // Check if status has changed
         if (previousStatus && previousStatus !== currentStatus) {
+          const title = `${s.name.charAt(0).toUpperCase()}${s.name.slice(1)} sensor`;
+          const body = `has turned ${s.status}`;
           // Send notification when status changes
-          notifyUser(s.name, s.status);
+          notifyUser(title, body);
+          insertNotification({
+            title,
+            body,
+            name: s.name,
+            status: s.status,
+            value: s.value,
+          });
         }
 
         // Update status map
