@@ -31,7 +31,9 @@ export default function TabLayout() {
           tabBarIcon: ({ focused }) => {
             // Explicitly set the icon color based on whether the tab is focused (active)
             const iconColor = focused ? 'white' : 'gray'; // Adjust 'gray' to the desired inactive color
-            return <Ionicons name="home" size={28} color={iconColor} />;
+            return (
+              <Ionicons name={focused ? 'home' : 'home-outline'} size={28} color={iconColor} />
+            );
           },
           headerRight: () => (
             <Link href="/modal" asChild>
@@ -52,6 +54,9 @@ export default function TabLayout() {
           },
           headerTintColor: isDarkMode ? 'white' : 'black',
           tabBarIcon: ({ color }) => <MaterialIcons name="sensors" size={28} color={color} />,
+          headerLeft: () => (
+            <MaterialIcons name="sensors" size={24} color="white" className="ml-5 items-center" />
+          ),
         }}
       />
       <Tabs.Screen name="notificationsScreen" options={{ href: null }} />
@@ -65,7 +70,15 @@ export default function TabLayout() {
             backgroundColor: isDarkMode ? 'black' : 'white',
           },
           headerTintColor: isDarkMode ? 'white' : 'black',
-          tabBarIcon: ({ color }) => <MaterialIcons name="notifications" size={28} color={color} />,
+          tabBarIcon: ({ color, focused }) => {
+            return (
+              <MaterialIcons
+                name={focused ? 'notifications' : 'notifications-none'}
+                size={28}
+                color={color}
+              />
+            );
+          },
           headerLeft: () => (
             <MaterialIcons
               name="notifications"
@@ -87,7 +100,14 @@ export default function TabLayout() {
             backgroundColor: isDarkMode ? 'black' : 'white',
           },
           headerTintColor: isDarkMode ? 'white' : 'black',
-          tabBarIcon: ({ color }) => <MaterialIcons name="settings" size={28} color={color} />,
+          tabBarIcon: ({ color, focused }) => {
+            return (
+              <Ionicons name={focused ? 'settings' : 'settings-outline'} size={28} color={color} />
+            );
+          },
+          headerLeft: () => (
+            <Ionicons name="settings" size={24} color="white" className="ml-5 items-center" />
+          ),
         }}
       />
     </Tabs>

@@ -70,12 +70,15 @@ const SensorsScreen = () => {
                   {sensor.name[0].toUpperCase() + sensor.name.slice(1)}
                 </Text>
                 <Switch
-                  trackColor={{ false: '#27272a', true: '#fafafa' }}
-                  thumbColor={sensor.status === 'on' ? '#09090b' : '#09090b'}
+                  trackColor={{ false: '#27272a', true: '#84cc16' }}
+                  thumbColor="#e4e4e7"
                   ios_backgroundColor="#27272a"
                   onValueChange={() => toggleSwitch(sensor.id)}
                   value={sensor.status === 'on'}
-                  style={{ transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }], marginRight: 5 }}
+                  style={{
+                    borderRadius: 16,
+                    marginRight: 10,
+                  }}
                 />
               </View>
             ))}
