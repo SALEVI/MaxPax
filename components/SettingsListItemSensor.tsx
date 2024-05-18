@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View, Text, Switch } from 'react-native';
 
 import { useUpdatePresetAway, useUpdatePresetHome, useUpdatePresetDisarmed } from '~/api/presets';
@@ -15,8 +15,7 @@ const SettingsListItemSensor = ({
   const { mutate: updatePresetHome } = useUpdatePresetHome();
   const { mutate: updatePresetDisarmed } = useUpdatePresetDisarmed();
 
-  // Update the state if the status prop changes
-  const toggleSwitch = (id, onToggleComplete) => {
+  const toggleSwitch = () => {
     if (!preset) return;
 
     const newStatus = preset.status === 'on' ? 'off' : 'on';
@@ -30,7 +29,7 @@ const SettingsListItemSensor = ({
 
     // Optimistically update the sensor status
     mutation(
-      { id, status: newStatus },
+      { id: preset.id, status: newStatus },
       {
         onSuccess: () => {
           console.log('success ' + presetName);
@@ -57,7 +56,7 @@ const SettingsListItemSensor = ({
           <Switch
             trackColor={{ false: '#27272a', true: '#84cc16' }}
             thumbColor="#e4e4e7"
-            onValueChange={() => toggleSwitch(preset.id, onToggleComplete)}
+            onValueChange={toggleSwitch}
             value={preset.status === 'on'}
           />
         </View>

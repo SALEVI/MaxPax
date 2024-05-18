@@ -8,19 +8,18 @@ const SettingsPreset = ({ presetName, preset, handleRefresh }) => {
   const [isEnabled, setIsEnabled] = useState(false);
   const [dropDownIcon, setDropDownIcon] = useState('chevron-down');
 
-  const groupedSensors = (preset || []).reduce((acc, preset) => {
-    const category = preset.category;
+  // Sort the sensors before grouping them
+  const sortedPreset = (preset || []).sort((a, b) => a.id - b.id);
+
+  // Group the sorted sensors
+  const groupedSensors = sortedPreset.reduce((acc, sensor) => {
+    const category = sensor.category;
     if (!acc[category]) {
       acc[category] = [];
     }
-    acc[category].push(preset);
+    acc[category].push(sensor);
     return acc;
   }, {});
-
-  // Sort each category array to maintain a consistent order
-  Object.keys(groupedSensors).forEach((category) => {
-    groupedSensors[category].sort((a, b) => a.id - b.id); // Sort by ID, adjust the property if necessary
-  });
 
   return (
     <View className="my-2 rounded-lg p-5 dark:bg-zinc-900">
