@@ -12,28 +12,32 @@ export default function Home() {
   const router = useRouter();
 
   const {
-    refetch: refetchPresetAway,
+    // refetch: refetchPresetAway,
     data: presetAway,
     error: presetAwayError,
     isLoading: presetAwayIsLoading,
   } = usePresetAwayList();
 
   const {
-    refetch: refetchPresetHome,
+    // refetch: refetchPresetHome,
     data: presetHome,
     error: presetHomeError,
     isLoading: presetHomeIsLoading,
   } = usePresetHomeList();
 
   const {
-    refetch: refetchPresetDisarmed,
+    // refetch: refetchPresetDisarmed,
     data: presetDisarmed,
     error: presetDisarmedError,
     isLoading: presetDisarmedIsLoading,
   } = usePresetDisarmedList();
 
   if (presetAwayIsLoading || presetHomeIsLoading || presetDisarmedIsLoading) {
-    return <ActivityIndicator size="large" color="#84cc16" />;
+    return (
+      <View className="flex-1 items-center justify-center dark:bg-black">
+        <ActivityIndicator size="large" color="#84cc16" />
+      </View>
+    );
   }
 
   if (presetAwayError) {
@@ -48,11 +52,11 @@ export default function Home() {
     return <Text>Failed to load presetDisarmed</Text>;
   }
 
-  const handleRefresh = () => {
-    refetchPresetAway();
-    refetchPresetHome();
-    refetchPresetDisarmed();
-  };
+  // const handleRefresh = () => {
+  //   refetchPresetAway();
+  //   refetchPresetHome();
+  //   refetchPresetDisarmed();
+  // };
 
   async function signOutUser() {
     await supabase.auth.signOut();
@@ -72,13 +76,9 @@ export default function Home() {
           <Text className=" pb-3 text-2xl font-bold antialiased dark:text-zinc-100">Presets</Text>
 
           <View>
-            <SettingsPreset presetName="Away" preset={presetAway} handleRefresh={handleRefresh} />
-            <SettingsPreset presetName="Home" preset={presetHome} handleRefresh={handleRefresh} />
-            <SettingsPreset
-              presetName="Disarmed"
-              preset={presetDisarmed}
-              handleRefresh={handleRefresh}
-            />
+            <SettingsPreset presetName="Away" preset={presetAway} />
+            <SettingsPreset presetName="Home" preset={presetHome} />
+            <SettingsPreset presetName="Disarmed" preset={presetDisarmed} />
           </View>
 
           <View className="mt-5 border dark:border-zinc-900" />

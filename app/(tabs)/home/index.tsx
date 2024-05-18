@@ -2,7 +2,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Stack } from 'expo-router';
 import { remapProps } from 'nativewind';
 import { useEffect, useState } from 'react';
-import { View, FlatList, Text, ActivityIndicator } from 'react-native';
+import { View, FlatList, Text, ActivityIndicator, Pressable } from 'react-native';
 
 import { useInsertNotification } from '~/api/notifications';
 import { useSensorList, useUpdateSensor } from '~/api/sensors';
@@ -25,6 +25,8 @@ export default function Home() {
   const { mutate: insertNotification } = useInsertNotification();
 
   const [statusMap, setStatusMap] = useState<{ [key: number]: string }>({});
+  const [headerBackgroundColor, setHeaderBackgroundColor] = useState('#84cc16');
+  const [presetButton, setPresetButton] = useState(true);
 
   //After loging in always looking for notifications
   useUpdateSensorListener();
@@ -119,33 +121,58 @@ export default function Home() {
     setStatusMap(updatedStatusMap);
   };
 
+  console.log(presetButton);
+
   return (
     <>
       <Stack.Screen options={{ title: 'Home' }} />
       {/* Maybe redo this into a Header component */}
       <View className="flex-1 dark:bg-black">
         <View className="min-h-72 w-full pl-5 pt-12 dark:bg-lime-500">
-          <Text className="text-3xl font-medium">Your home is</Text>
-          <Text className="text-4xl font-extrabold">Secured</Text>
+          <View className="flex-1 flex-col justify-evenly">
+            <View>
+              <Text className="text-3xl font-medium">Your home is</Text>
+              <Text className="text-4xl font-extrabold">Secured</Text>
+            </View>
+            <View className="mx-5 mb-14 flex h-14 flex-row items-center justify-evenly rounded-lg p-1 px-2 dark:bg-lime-600">
+              <Pressable
+                className="mr-2 h-full w-1/3 items-center justify-center rounded-md dark:bg-orange-500"
+                onPress={() => setPresetButton(true)}>
+                <Text className="text-xl font-bold dark:text-zinc-200">Away</Text>
+              </Pressable>
+              <Pressable
+                className="mr-2 h-full w-1/3 items-center justify-center rounded-md dark:bg-orange-500"
+                onPress={() => setPresetButton(true)}>
+                <Text>Home</Text>
+              </Pressable>
+              <Pressable
+                className="h-full w-1/3 items-center justify-center rounded-md dark:bg-orange-500"
+                onPress={() => setPresetButton(true)}>
+                <Text>Disarmed</Text>
+              </Pressable>
+            </View>
+          </View>
         </View>
         <View className="bottom-12 flex-1 bg-white py-2 dark:bg-black" style={{ borderRadius: 30 }}>
           <View className="flex-row items-center pl-5 pt-5 ">
             <MaterialIcons name="sensors" size={36} color="white" />
             <Text className="pl-2 text-3xl font-bold dark:text-zinc-50">Sensors</Text>
           </View>
-          <FlatList
-            contentContainerClassName="flex-grow flex-row flex-wrap justify-around gap-4 p-5 mt-10"
-            data={uniqueCategories}
-            renderItem={({ item }) => (
-              <CategoryListItem
-                sensor={item}
-                statusMap={statusMap}
-                toggleAllSensorsInCategory={toggleAllSensorsInCategory} // Pass the function here
-              />
-            )}
-            numColumns={2}
-            columnWrapperClassName="gap-4"
-          />
+          <Pressable onPress={() => setPresetButton(false)}>
+            <FlatList
+              contentContainerClassName="flex-grow flex-row flex-wrap justify-around gap-4 p-5 mt-10"
+              data={uniqueCategories}
+              renderItem={({ item }) => (
+                <CategoryListItem
+                  sensor={item}
+                  statusMap={statusMap}
+                  toggleAllSensorsInCategory={toggleAllSensorsInCategory} // Pass the function here
+                />
+              )}
+              numColumns={2}
+              columnWrapperClassName="gap-4"
+            />
+          </Pressable>
         </View>
       </View>
     </>

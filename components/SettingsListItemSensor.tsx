@@ -4,13 +4,7 @@ import { View, Text, Switch } from 'react-native';
 
 import { useUpdatePresetAway, useUpdatePresetHome, useUpdatePresetDisarmed } from '~/api/presets';
 
-const SettingsListItemSensor = ({
-  settingName,
-  iconName,
-  preset,
-  presetName,
-  onToggleComplete,
-}) => {
+const SettingsListItemSensor = ({ settingName, iconName, preset, presetName }) => {
   const { mutate: updatePresetAway } = useUpdatePresetAway();
   const { mutate: updatePresetHome } = useUpdatePresetHome();
   const { mutate: updatePresetDisarmed } = useUpdatePresetDisarmed();
@@ -33,7 +27,6 @@ const SettingsListItemSensor = ({
       {
         onSuccess: () => {
           console.log('success ' + presetName);
-          onToggleComplete();
         },
         onError: () => {
           // Revert the status if the update fails

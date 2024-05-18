@@ -4,7 +4,7 @@ import { View, Text, Pressable } from 'react-native';
 
 import SettingsListItemSensor from './SettingsListItemSensor';
 
-const SettingsPreset = ({ presetName, preset, handleRefresh }) => {
+const SettingsPreset = ({ presetName, preset }) => {
   const [isEnabled, setIsEnabled] = useState(false);
   const [dropDownIcon, setDropDownIcon] = useState('chevron-down');
 
@@ -51,7 +51,6 @@ const SettingsPreset = ({ presetName, preset, handleRefresh }) => {
                 iconName="flash-outline"
                 preset={sensor}
                 presetName={presetName}
-                onToggleComplete={handleRefresh}
               />
             </View>
           ))}
