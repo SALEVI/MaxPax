@@ -50,16 +50,16 @@ const CategoryListItem = ({
           resizeMode="cover"
           imageStyle={{ borderRadius: 10 }}>
           <View className="min-h-28 min-w-52 basis-1/4 backdrop-blur-sm dark:bg-black/25">
-            <View className="flex-1 justify-evenly p-3">
+            <View className="ml-3 mr-2 flex-1 justify-evenly">
               <View>
-                <Text className="text-2xl font-bold text-slate-200 dark:text-zinc-50">
+                <Text className="text-xl font-bold text-slate-200 dark:text-zinc-50">
                   {sensor.category[0].toUpperCase() + sensor.category.slice(1)}
                 </Text>
               </View>
               <Pressable
                 onPress={handlePress}
-                className="w-14 items-center self-end rounded-full p-2 dark:bg-lime-500">
-                <Ionicons name="power" size={20} color="black" />
+                className="w-10 items-center self-end rounded-full p-2 dark:bg-lime-500">
+                <Ionicons name="power" size={18} color="black" />
               </Pressable>
             </View>
           </View>
