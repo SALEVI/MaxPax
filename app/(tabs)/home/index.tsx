@@ -1,4 +1,4 @@
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Stack } from 'expo-router';
 import { remapProps } from 'nativewind';
 import { useEffect, useState } from 'react';
@@ -25,8 +25,9 @@ export default function Home() {
   const { mutate: insertNotification } = useInsertNotification();
 
   const [statusMap, setStatusMap] = useState<{ [key: number]: string }>({});
-  const [headerBackgroundColor, setHeaderBackgroundColor] = useState('#84cc16');
-  const [presetButton, setPresetButton] = useState(true);
+
+  //Need to save on phone storage the last selected preset
+  const [selectedPreset, setSelectedPreset] = useState('Away');
 
   //After loging in always looking for notifications
   useUpdateSensorListener();
@@ -43,6 +44,7 @@ export default function Home() {
           const title = `${s.name.charAt(0).toUpperCase()}${s.name.slice(1)} sensor`;
           const body = `has turned ${s.status}`;
           // Send notification when status changes
+
           notifyUser(title, body);
           insertNotification({
             title,
@@ -121,34 +123,158 @@ export default function Home() {
     setStatusMap(updatedStatusMap);
   };
 
-  console.log(presetButton);
-
   return (
     <>
       <Stack.Screen options={{ title: 'Home' }} />
       {/* Maybe redo this into a Header component */}
       <View className="flex-1 dark:bg-black">
-        <View className="min-h-72 w-full pl-5 pt-12 dark:bg-lime-500">
-          <View className="flex-1 flex-col justify-evenly">
+        <View
+          className={`min-h-72 w-full pl-3 pt-1 ${
+            selectedPreset === 'Away'
+              ? 'dark:bg-lime-500'
+              : selectedPreset === 'Home'
+                ? 'dark:bg-amber-400'
+                : selectedPreset === 'Disarmed'
+                  ? 'dark:bg-red-600'
+                  : 'dark:bg-transparent'
+          }`}>
+          <View className="mt-5 flex-1 flex-col justify-evenly">
             <View>
               <Text className="text-3xl font-medium">Your home is</Text>
-              <Text className="text-4xl font-extrabold">Secured</Text>
+              <Text className="text-4xl font-extrabold">
+                {selectedPreset === 'Away'
+                  ? 'Secured'
+                  : selectedPreset === 'Home'
+                    ? 'Welcoming'
+                    : selectedPreset === 'Disarmed'
+                      ? 'Unsecured'
+                      : 'dark:bg-transparent'}
+              </Text>
             </View>
-            <View className="mx-5 mb-14 flex h-14 flex-row items-center justify-evenly rounded-lg p-1 px-2 dark:bg-lime-600">
+            <View
+              className={`mx-3 mb-14 mr-7 flex h-14 flex-row items-center justify-evenly rounded-lg p-1 px-2  ${
+                selectedPreset === 'Away'
+                  ? 'dark:bg-lime-600'
+                  : selectedPreset === 'Home'
+                    ? 'dark:bg-amber-500'
+                    : selectedPreset === 'Disarmed'
+                      ? 'dark:bg-red-700'
+                      : 'dark:bg-transparent'
+              }`}>
               <Pressable
-                className="mr-2 h-full w-1/3 items-center justify-center rounded-md dark:bg-orange-500"
-                onPress={() => setPresetButton(true)}>
-                <Text className="text-xl font-bold dark:text-zinc-200">Away</Text>
+                className={`mr-2 h-full w-1/3 flex-row items-center justify-center rounded-md ${
+                  selectedPreset === 'Away'
+                    ? 'dark:bg-orange-500'
+                    : selectedPreset === 'Home'
+                      ? 'dark:bg-transparent'
+                      : selectedPreset === 'Disarmed'
+                        ? 'dark:bg-transparent'
+                        : 'dark:bg-transparent'
+                }`}
+                onPress={() => {
+                  setSelectedPreset('Away');
+                }}>
+                <MaterialCommunityIcons
+                  name="lock-outline"
+                  size={20}
+                  color={`${
+                    selectedPreset === 'Away'
+                      ? 'white'
+                      : selectedPreset === 'Home'
+                        ? 'black'
+                        : selectedPreset === 'Disarmed'
+                          ? 'black'
+                          : 'black'
+                  }`}
+                />
+                <Text
+                  className={`ml-1 ${
+                    selectedPreset === 'Away'
+                      ? 'text-xl font-bold dark:text-white'
+                      : selectedPreset === 'Home'
+                        ? 'text-xl font-semibold'
+                        : selectedPreset === 'Disarmed'
+                          ? 'text-xl font-semibold'
+                          : 'dark:bg-transparent'
+                  }`}>
+                  Away
+                </Text>
               </Pressable>
               <Pressable
-                className="mr-2 h-full w-1/3 items-center justify-center rounded-md dark:bg-orange-500"
-                onPress={() => setPresetButton(true)}>
-                <Text>Home</Text>
+                className={`mr-2 h-full w-1/3 flex-row items-center justify-center rounded-md ${
+                  selectedPreset === 'Away'
+                    ? 'dark:bg-transparent'
+                    : selectedPreset === 'Home'
+                      ? 'dark:bg-orange-900'
+                      : selectedPreset === 'Disarmed'
+                        ? 'dark:bg-transparent'
+                        : 'dark:bg-transparent'
+                }`}
+                onPress={() => {
+                  setSelectedPreset('Home');
+                }}>
+                <MaterialCommunityIcons
+                  name="home-lock"
+                  size={20}
+                  color={`${
+                    selectedPreset === 'Away'
+                      ? 'black'
+                      : selectedPreset === 'Home'
+                        ? 'white'
+                        : selectedPreset === 'Disarmed'
+                          ? 'black'
+                          : 'black'
+                  }`}
+                />
+                <Text
+                  className={`ml-1 ${
+                    selectedPreset === 'Away'
+                      ? 'text-xl font-semibold'
+                      : selectedPreset === 'Home'
+                        ? 'text-xl font-bold dark:text-white'
+                        : selectedPreset === 'Disarmed'
+                          ? 'text-xl font-semibold'
+                          : 'dark:bg-transparent'
+                  }`}>
+                  Home
+                </Text>
               </Pressable>
               <Pressable
-                className="h-full w-1/3 items-center justify-center rounded-md dark:bg-orange-500"
-                onPress={() => setPresetButton(true)}>
-                <Text>Disarmed</Text>
+                className={`h-full w-1/3 flex-row items-center justify-center rounded-md ${
+                  selectedPreset === 'Away'
+                    ? 'dark:bg-transparent'
+                    : selectedPreset === 'Home'
+                      ? 'dark:bg-transparent'
+                      : selectedPreset === 'Disarmed'
+                        ? 'dark:bg-zinc-900'
+                        : 'dark:bg-transparent'
+                }`}
+                onPress={() => setSelectedPreset('Disarmed')}>
+                <MaterialCommunityIcons
+                  name="lock-open-variant-outline"
+                  size={20}
+                  color={`${
+                    selectedPreset === 'Away'
+                      ? 'black'
+                      : selectedPreset === 'Home'
+                        ? 'black'
+                        : selectedPreset === 'Disarmed'
+                          ? 'white'
+                          : 'black'
+                  }`}
+                />
+                <Text
+                  className={`ml-1 ${
+                    selectedPreset === 'Away'
+                      ? 'text-xl font-semibold'
+                      : selectedPreset === 'Home'
+                        ? 'text-xl font-semibold '
+                        : selectedPreset === 'Disarmed'
+                          ? 'text-xl font-bold dark:text-white'
+                          : 'dark:bg-transparent'
+                  }`}>
+                  Disarmed
+                </Text>
               </Pressable>
             </View>
           </View>
@@ -158,21 +284,20 @@ export default function Home() {
             <MaterialIcons name="sensors" size={36} color="white" />
             <Text className="pl-2 text-3xl font-bold dark:text-zinc-50">Sensors</Text>
           </View>
-          <Pressable onPress={() => setPresetButton(false)}>
-            <FlatList
-              contentContainerClassName="flex-grow flex-row flex-wrap justify-around gap-4 p-5 mt-10"
-              data={uniqueCategories}
-              renderItem={({ item }) => (
-                <CategoryListItem
-                  sensor={item}
-                  statusMap={statusMap}
-                  toggleAllSensorsInCategory={toggleAllSensorsInCategory} // Pass the function here
-                />
-              )}
-              numColumns={2}
-              columnWrapperClassName="gap-4"
-            />
-          </Pressable>
+
+          <FlatList
+            contentContainerClassName="flex-grow flex-row flex-wrap justify-around gap-4 p-5 mt-10"
+            data={uniqueCategories}
+            renderItem={({ item }) => (
+              <CategoryListItem
+                sensor={item}
+                statusMap={statusMap}
+                toggleAllSensorsInCategory={toggleAllSensorsInCategory} // Pass the function here
+              />
+            )}
+            numColumns={2}
+            columnWrapperClassName="gap-4"
+          />
         </View>
       </View>
     </>
