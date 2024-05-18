@@ -129,7 +129,7 @@ export default function Home() {
       {/* Maybe redo this into a Header component */}
       <View className="flex-1 dark:bg-black">
         <View
-          className={`min-h-72 w-full pl-3 pt-1 ${
+          className={`min-h-[40%] w-full pl-3 pt-1 ${
             selectedPreset === 'Away'
               ? 'dark:bg-lime-500'
               : selectedPreset === 'Home'
@@ -140,8 +140,8 @@ export default function Home() {
           }`}>
           <View className="mt-5 flex-1 flex-col justify-evenly">
             <View>
-              <Text className="text-3xl font-medium">Your home is</Text>
-              <Text className="text-4xl font-extrabold">
+              <Text className="ml-2 mt-3 text-4xl font-semibold antialiased">Your home is</Text>
+              <Text className="ml-2 mt-1 text-5xl font-extrabold antialiased">
                 {selectedPreset === 'Away'
                   ? 'Secured'
                   : selectedPreset === 'Home'
@@ -280,11 +280,16 @@ export default function Home() {
           </View>
         </View>
         <View className="bottom-12 flex-1 bg-white py-2 dark:bg-black" style={{ borderRadius: 30 }}>
-          <View className="flex-row items-center pl-5 pt-5 ">
+          <View className="flex-row items-center pl-5 pt-3 ">
             <MaterialIcons name="sensors" size={36} color="white" />
             <Text className="pl-2 text-3xl font-bold dark:text-zinc-50">Sensors</Text>
           </View>
 
+          <View className="mx-5 mt-10 h-14 justify-center rounded-lg dark:bg-zinc-900">
+            <Text className="self-center text-lg font-semibold dark:text-white">
+              Latest Notification
+            </Text>
+          </View>
           <FlatList
             contentContainerClassName="flex-grow flex-row flex-wrap justify-around gap-4 p-5 mt-10"
             data={uniqueCategories}
