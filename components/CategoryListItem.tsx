@@ -6,16 +6,16 @@ import { Tables } from 'types';
 
 const categoryImages = {
   motions: {
-    uri: '*******/storage/v1/object/sign/category-images/PIRmotionTBG-115.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYXRlZ29yeS1pbWFnZXMvUElSbW90aW9uVEJHLTExNS5wbmciLCJpYXQiOjE3MTU4NTAyODEsImV4cCI6MTc0NzM4NjI4MX0.7ED86TKveazBFWAlDmEKV0_vUK-FALqFUHadloFstYo&t=2024-05-16T09%3A04%3A19.475Z',
+    uri: '*******/storage/v1/object/sign/category-images/Motions.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYXRlZ29yeS1pbWFnZXMvTW90aW9ucy5wbmciLCJpYXQiOjE3MTYwNTc4MTAsImV4cCI6MTc0NzU5MzgxMH0.mSZZNcWtN8q8HsRSSvWfQ4UeRF8fvUmxPN4qTQIQsYo&t=2024-05-18T18%3A43%3A04.737Z',
   },
   windows: {
-    uri: '*******/storage/v1/object/sign/category-images/WindowTBG-115.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYXRlZ29yeS1pbWFnZXMvV2luZG93VEJHLTExNS5wbmciLCJpYXQiOjE3MTYwNDM2MDcsImV4cCI6MTc0NzU3OTYwN30.s_evC_sboRSzlwXBp-yXkhvtwN9Cey1AF-UcnMjdvaI&t=2024-05-18T14%3A46%3A22.457Z',
+    uri: '*******/storage/v1/object/sign/category-images/Windows2.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYXRlZ29yeS1pbWFnZXMvV2luZG93czIucG5nIiwiaWF0IjoxNzE2MDU4MzI2LCJleHAiOjE3NDc1OTQzMjZ9.wI2jTUU6tsskxLEe_w3thh-EiVw2B7YJjzLd_K70KaM&t=2024-05-18T18%3A51%3A40.884Z',
   },
   doors: {
-    uri: '*******/storage/v1/object/sign/category-images/DoorTBG-100.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYXRlZ29yeS1pbWFnZXMvRG9vclRCRy0xMDAucG5nIiwiaWF0IjoxNzE1ODUwMzM3LCJleHAiOjE3NDczODYzMzd9.Y9WEK-lqRJrlIzAJxzzKBBvpaCPsKmmfkD_9uVgf_A0&t=2024-05-16T09%3A05%3A15.587Z',
+    uri: '*******/storage/v1/object/sign/category-images/Doors2.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYXRlZ29yeS1pbWFnZXMvRG9vcnMyLnBuZyIsImlhdCI6MTcxNjA1ODM0MCwiZXhwIjoxNzQ3NTk0MzQwfQ.kQzAQc827dd4f1qeLYDFRtXMej7TT999AdI1uye7ZDI&t=2024-05-18T18%3A51%3A54.862Z',
   },
   alarms: {
-    uri: '*******/storage/v1/object/sign/category-images/AlarmTBG-1000g.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYXRlZ29yeS1pbWFnZXMvQWxhcm1UQkctMTAwMGcucG5nIiwiaWF0IjoxNzE1ODUwMzAwLCJleHAiOjE3NDczODYzMDB9.wRostGzVJ6s0NVWjmyN7HHHHnX8Fgk6tmP7PwcrGbnc&t=2024-05-16T09%3A04%3A38.821Z',
+    uri: '*******/storage/v1/object/sign/category-images/Alarms.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYXRlZ29yeS1pbWFnZXMvQWxhcm1zLnBuZyIsImlhdCI6MTcxNjA1Nzg3NCwiZXhwIjoxNzQ3NTkzODc0fQ.MIVgH3TUAdmSGGidjRCJFfcheQzaAiSE5AG2lfUwpyY&t=2024-05-18T18%3A44%3A08.689Z',
   },
 };
 
@@ -49,13 +49,12 @@ const CategoryListItem = ({
           source={categoryImages[sensor.category as keyof typeof categoryImages]}
           resizeMode="cover"
           imageStyle={{ borderRadius: 10 }}>
-          <View className="min-h-28 min-w-52 basis-1/4 border bg-black/15 backdrop-blur-sm dark:bg-black/45">
+          <View className="min-h-28 min-w-52 basis-1/4 backdrop-blur-sm dark:bg-black/25">
             <View className="flex-1 justify-evenly p-3">
               <View>
                 <Text className="text-2xl font-bold text-slate-200 dark:text-zinc-50">
                   {sensor.category[0].toUpperCase() + sensor.category.slice(1)}
                 </Text>
-                <Text className="text-sm text-slate-900 dark:text-zinc-200">{sensor.name}</Text>
               </View>
               <Pressable
                 onPress={handlePress}
