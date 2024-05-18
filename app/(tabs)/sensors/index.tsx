@@ -22,10 +22,13 @@ const SensorsScreen = () => {
     return <Text>Failed to load data</Text>;
   }
 
+  console.log(sensors);
+
   const toggleSwitch = (id: number) => {
     if (!sensors) return;
 
     const currentSensor = sensors.find((sensor) => sensor.id === id);
+
     if (!currentSensor) return;
 
     const newStatus = currentSensor.status === 'on' ? 'off' : 'on';

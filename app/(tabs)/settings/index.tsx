@@ -1,16 +1,58 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { View, Text, Pressable, ScrollView } from 'react-native';
+import { View, Text, Pressable, ScrollView, ActivityIndicator } from 'react-native';
 
 import SettingsListItem from '../../../components/SettingsListItem';
 
+import { usePresetAwayList, usePresetDisarmedList, usePresetHomeList } from '~/api/presets';
 import SettingsPreset from '~/components/SettingsPreset';
-import { useSensor } from '~/providers/SensorProvider';
 import { supabase } from '~/utils/supabase';
 
 export default function Home() {
   const router = useRouter();
-  const { presetAway, presetHome, presetDisarmed } = useSensor();
+
+  const {
+    refetch: refetchPresetAway,
+    data: presetAway,
+    error: presetAwayError,
+    isLoading: presetAwayIsLoading,
+  } = usePresetAwayList();
+
+  const {
+    refetch: refetchPresetHome,
+    data: presetHome,
+    error: presetHomeError,
+    isLoading: presetHomeIsLoading,
+  } = usePresetHomeList();
+
+  const {
+    refetch: refetchPresetDisarmed,
+    data: presetDisarmed,
+    error: presetDisarmedError,
+    isLoading: presetDisarmedIsLoading,
+  } = usePresetDisarmedList();
+
+  if (presetAwayIsLoading || presetHomeIsLoading || presetDisarmedIsLoading) {
+    return <ActivityIndicator size="large" color="#84cc16" />;
+  }
+
+  if (presetAwayError) {
+    return <Text>Failed to load presetAway</Text>;
+  }
+
+  if (presetHomeError) {
+    return <Text>Failed to load presetHome</Text>;
+  }
+
+  if (presetDisarmedError) {
+    return <Text>Failed to load presetDisarmed</Text>;
+  }
+
+  const handleRefresh = () => {
+    refetchPresetAway();
+    refetchPresetHome();
+    refetchPresetDisarmed();
+  };
 
   async function signOutUser() {
     await supabase.auth.signOut();
@@ -30,9 +72,13 @@ export default function Home() {
           <Text className=" pb-3 text-2xl font-bold antialiased dark:text-zinc-100">Presets</Text>
 
           <View>
-            <SettingsPreset presetName="Away" sensor={presetAway} />
-            <SettingsPreset presetName="Home" sensor={presetHome} />
-            <SettingsPreset presetName="Disarmed" sensor={presetDisarmed} />
+            <SettingsPreset presetName="Away" preset={presetAway} handleRefresh={handleRefresh} />
+            <SettingsPreset presetName="Home" preset={presetHome} handleRefresh={handleRefresh} />
+            <SettingsPreset
+              presetName="Disarmed"
+              preset={presetDisarmed}
+              handleRefresh={handleRefresh}
+            />
           </View>
 
           <View className="mt-5 border dark:border-zinc-900" />

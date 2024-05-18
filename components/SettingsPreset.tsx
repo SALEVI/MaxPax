@@ -3,35 +3,24 @@ import React, { useState } from 'react';
 import { View, Text, Pressable } from 'react-native';
 
 import SettingsListItemSensor from './SettingsListItemSensor';
-import { useSensor } from '../providers/SensorProvider';
 
-// import { useSensorList, useUpdateSensor } from '~/api/sensors';
-
-const SettingsPreset = ({ presetName, sensor }) => {
+const SettingsPreset = ({ presetName, preset, handleRefresh }) => {
   const [isEnabled, setIsEnabled] = useState(false);
   const [dropDownIcon, setDropDownIcon] = useState('chevron-down');
-  // const { data: sensors, error, isLoading } = useSensorList();
 
-  // if (isLoading) {
-  //   return (
-  //     <View className="flex-1 items-center justify-center dark:bg-black">
-  //       <ActivityIndicator size="large" color="#84cc16" />
-  //     </View>
-  //   );
-  // }
-
-  // if (error) {
-  //   return <Text>Failed to load data</Text>;
-  // }
-  // Group devices by category
-  const groupedSensors = (sensor || []).reduce((acc, sensor) => {
-    const category = sensor.category;
+  const groupedSensors = (preset || []).reduce((acc, preset) => {
+    const category = preset.category;
     if (!acc[category]) {
       acc[category] = [];
     }
-    acc[category].push(sensor);
+    acc[category].push(preset);
     return acc;
   }, {});
+
+  // Sort each category array to maintain a consistent order
+  Object.keys(groupedSensors).forEach((category) => {
+    groupedSensors[category].sort((a, b) => a.id - b.id); // Sort by ID, adjust the property if necessary
+  });
 
   return (
     <View className="my-2 rounded-lg p-5 dark:bg-zinc-900">
@@ -49,17 +38,21 @@ const SettingsPreset = ({ presetName, sensor }) => {
 
       {Object.keys(groupedSensors).map((category) => (
         <View key={category} className={`mb-2 ${isEnabled ? 'flex' : 'hidden'}`}>
-          <Text className="rounded-md border-t border-zinc-800 p-4 text-xl font-bold dark:text-white">
-            {category[0].toUpperCase() + category.slice(1)}
-          </Text>
+          <View className="flex flex-row items-center justify-between py-2">
+            <View className="w-1/3 dark:bg-zinc-800" style={{ height: 1 }} />
+            <Text className="font-semibold dark:text-zinc-400">
+              {category[0].toUpperCase() + category.slice(1)}
+            </Text>
+            <View className="w-1/3 dark:bg-zinc-800" style={{ height: 1 }} />
+          </View>
           {groupedSensors[category].map((sensor) => (
-            <View key={sensor.id} className="flex flex-row items-center justify-between">
+            <View key={sensor.id}>
               <SettingsListItemSensor
                 settingName={sensor.name[0].toUpperCase() + sensor.name.slice(1)}
-                isEnabled={isEnabled}
                 iconName="flash-outline"
-                id={sensor.id}
-                status={sensor.status}
+                preset={sensor}
+                presetName={presetName}
+                onToggleComplete={handleRefresh}
               />
             </View>
           ))}

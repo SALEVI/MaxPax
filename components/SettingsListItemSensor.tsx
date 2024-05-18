@@ -1,53 +1,51 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
-import { View, Text, Switch, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Switch } from 'react-native';
 
-import { useSensorList, useUpdateSensor } from '~/api/sensors';
+import { useUpdatePresetAway, useUpdatePresetHome, useUpdatePresetDisarmed } from '~/api/presets';
 
-const SettingsListItemSensor = ({ settingName, isEnabled, iconName, id, status }) => {
-  const [isSensorEnable, setIsSensorEnabled] = useState(false);
+const SettingsListItemSensor = ({
+  settingName,
+  iconName,
+  preset,
+  presetName,
+  onToggleComplete,
+}) => {
+  const { mutate: updatePresetAway } = useUpdatePresetAway();
+  const { mutate: updatePresetHome } = useUpdatePresetHome();
+  const { mutate: updatePresetDisarmed } = useUpdatePresetDisarmed();
 
-  const { data: sensors, error, isLoading } = useSensorList();
-  const { mutate: updateSensor } = useUpdateSensor();
+  // Update the state if the status prop changes
+  const toggleSwitch = (id, onToggleComplete) => {
+    if (!preset) return;
 
-  if (isLoading) {
-    return (
-      <View className="flex-1 items-center justify-center dark:bg-black">
-        <ActivityIndicator size="large" color="#84cc16" />
-      </View>
-    );
-  }
+    const newStatus = preset.status === 'on' ? 'off' : 'on';
 
-  if (error) {
-    return <Text>Failed to load data</Text>;
-  }
-
-  const toggleSwitch = (id: number) => {
-    if (!sensors) return;
-
-    const currentSensor = sensors.find((sensor) => sensor.id === id);
-    if (!currentSensor) return;
-
-    const newStatus = currentSensor.status === 'on' ? 'off' : 'on';
-    setIsSensorEnabled(newStatus === 'on');
+    const mutation =
+      presetName === 'Away'
+        ? updatePresetAway
+        : presetName === 'Home'
+          ? updatePresetHome
+          : updatePresetDisarmed;
 
     // Optimistically update the sensor status
-    updateSensor(
+    mutation(
       { id, status: newStatus },
       {
         onSuccess: () => {
-          console.log('success');
+          console.log('success ' + presetName);
+          onToggleComplete();
         },
         onError: () => {
           // Revert the status if the update fails
-          setIsSensorEnabled(currentSensor.status === 'on');
+          console.log('error ' + presetName);
         },
       }
     );
   };
 
   return (
-    <View className={`${isEnabled ? 'flex' : 'hidden'} mt-3`}>
+    <View className="mt-3">
       <View className="flex h-14 flex-row justify-between rounded-lg pl-4 dark:bg-black">
         <View className="justify-center">
           <View className="flex flex-row items-center">
@@ -59,9 +57,8 @@ const SettingsListItemSensor = ({ settingName, isEnabled, iconName, id, status }
           <Switch
             trackColor={{ false: '#27272a', true: '#84cc16' }}
             thumbColor="#e4e4e7"
-            style={{ opacity: isEnabled ? 1 : 0 }}
-            onValueChange={() => toggleSwitch(id)}
-            value={status === 'on'}
+            onValueChange={() => toggleSwitch(preset.id, onToggleComplete)}
+            value={preset.status === 'on'}
           />
         </View>
       </View>
