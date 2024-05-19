@@ -1,4 +1,5 @@
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Stack } from 'expo-router';
 import { remapProps } from 'nativewind';
 import { useEffect, useState } from 'react';
@@ -31,8 +32,33 @@ export default function Home() {
   const { colorScheme, toggleColorScheme } = useSensor();
 
   const [statusMap, setStatusMap] = useState<{ [key: number]: string }>({});
+  const saveVariable = async (key, value) => {
+    try {
+      await AsyncStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      console.error('Error saving variable:', error);
+    }
+  };
 
-  //Need to save on phone storage the last selected preset
+  const readVariable = async (key) => {
+    try {
+      const value = await AsyncStorage.getItem(key);
+      if (value !== null) {
+        return JSON.parse(value);
+      } else {
+        console.log(`No value found for key ${key}`);
+        return null;
+      }
+    } catch (error) {
+      console.error('Error reading variable:', error);
+      return null;
+    }
+  };
+
+  readVariable('lastSelectedPreset').then((value) => {
+    if (value) setSelectedPreset(value);
+  });
+
   const [selectedPreset, setSelectedPreset] = useState('Away');
 
   //After loging in always looking for notifications
@@ -212,6 +238,7 @@ export default function Home() {
                 }`}
                 onPress={() => {
                   setSelectedPreset('Away');
+                  saveVariable('lastSelectedPreset', 'Away');
                 }}>
                 <MaterialCommunityIcons
                   name="lock-outline"
@@ -252,6 +279,7 @@ export default function Home() {
                 }`}
                 onPress={() => {
                   setSelectedPreset('Home');
+                  saveVariable('lastSelectedPreset', 'Home');
                 }}>
                 <MaterialCommunityIcons
                   name="home-lock"
@@ -290,7 +318,10 @@ export default function Home() {
                         ? 'bg-zinc-900'
                         : 'bg-transparent'
                 }`}
-                onPress={() => setSelectedPreset('Disarmed')}>
+                onPress={() => {
+                  setSelectedPreset('Disarmed');
+                  saveVariable('lastSelectedPreset', 'Disarmed');
+                }}>
                 <MaterialCommunityIcons
                   name="lock-open-variant-outline"
                   size={20}

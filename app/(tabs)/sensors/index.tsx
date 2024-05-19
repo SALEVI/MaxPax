@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, useColorScheme, Switch, ActivityIndicator } from 'react-native';
+import { View, Text, useColorScheme, ActivityIndicator, ScrollView } from 'react-native';
 
 import { useSensorList, useUpdateSensor } from '~/api/sensors';
+import SensorsListItem from '~/components/SensorsListItem';
 
 const SensorsScreen = () => {
   const [isEnabled, setIsEnabled] = useState(false);
@@ -60,35 +61,54 @@ const SensorsScreen = () => {
   }, {});
 
   return (
-    <View className="flex-1 dark:bg-black">
-      <View className="mx-5 mt-5 rounded-lg border border-zinc-800">
+    //Might need to modify the contentContainerStyle if this wrecks srolling, need bigger data pull to see
+    <ScrollView
+      className="flex-1 dark:bg-black"
+      contentContainerStyle={{ marginTop: 'auto', marginBottom: 'auto' }}>
+      <View className="mx-5 rounded-lg border-zinc-800 bg-zinc-300 dark:bg-zinc-900">
         {Object.keys(groupedSensors).map((category) => (
-          <View key={category} className="mb-2">
-            <Text className="rounded-md border-t border-zinc-800 p-4 text-xl font-bold dark:text-white">
-              {category[0].toUpperCase() + category.slice(1)}
-            </Text>
+          <View key={category} className="mt-3 flex">
+            <View className="mb-3 flex flex-row items-center justify-between py-2">
+              <View className="w-1/3 bg-zinc-100 dark:bg-zinc-800" style={{ height: 1 }} />
+              <Text className="text-xl font-semibold dark:text-zinc-400">
+                {category[0].toUpperCase() + category.slice(1)}
+              </Text>
+              <View className="w-1/3 bg-zinc-100 dark:bg-zinc-800" style={{ height: 1 }} />
+            </View>
             {groupedSensors[category].map((sensor) => (
-              <View key={sensor.id} className="flex flex-row items-center justify-between">
-                <Text className="rounded-md p-4 text-lg font-medium dark:text-zinc-300">
-                  {sensor.name[0].toUpperCase() + sensor.name.slice(1)}
-                </Text>
-                <Switch
-                  trackColor={{ false: '#27272a', true: '#84cc16' }}
-                  thumbColor="#e4e4e7"
-                  ios_backgroundColor="#27272a"
-                  onValueChange={() => toggleSwitch(sensor.id)}
-                  value={sensor.status === 'on'}
-                  style={{
-                    borderRadius: 16,
-                    marginRight: 10,
-                  }}
+              <View key={sensor.id}>
+                <SensorsListItem
+                  id={sensor.id}
+                  status={sensor.status}
+                  toggleSwitch={toggleSwitch}
+                  iconName="flashlight"
+                  colorScheme={isDarkMode ? 'light' : 'dark'}
+                  settingsName={sensor.name[0].toUpperCase() + sensor.name.slice(1)}
                 />
               </View>
+              // <View
+              //   key={sensor.id}
+              //   className="my-2 ml-5 flex flex-row items-center justify-between rounded-lg border-zinc-800 bg-black pl-4 dark:bg-black">
+              //   <Text className="rounded-md text-lg font-medium dark:text-zinc-300">
+              //     {sensor.name[0].toUpperCase() + sensor.name.slice(1)}
+              //   </Text>
+              //   <Switch
+              //     trackColor={{ false: '#27272a', true: '#84cc16' }}
+              //     thumbColor="#e4e4e7"
+              //     ios_backgroundColor="#27272a"
+              //     onValueChange={() => toggleSwitch(sensor.id)}
+              //     value={sensor.status === 'on'}
+              //     style={{
+              //       borderRadius: 16,
+              //       marginRight: 10,
+              //     }}
+              //   />
+              // </View>
             ))}
           </View>
         ))}
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
