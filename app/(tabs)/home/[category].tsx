@@ -1,6 +1,7 @@
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { View, Text, useColorScheme, Switch, ActivityIndicator } from 'react-native';
+import { View, Text, Switch, ActivityIndicator, Pressable } from 'react-native';
 
 import { useInsertNotification } from '~/api/notifications';
 import { useSensorList, useUpdateSensor } from '~/api/sensors';
@@ -8,7 +9,6 @@ import { useUpdateSensorListener } from '~/api/sensors/subscriptions';
 import { notifyUser } from '~/utils/notifications';
 
 const DeviceDetailsScreen = () => {
-  const isDarkMode = useColorScheme() === 'dark';
   const { category } = useLocalSearchParams();
   const categoryCapitalized =
     (category as string)?.charAt(0)?.toUpperCase() + (category as string)?.slice(1);
@@ -16,6 +16,8 @@ const DeviceDetailsScreen = () => {
   const { data: sensor, error, isLoading } = useSensorList();
   const { mutate: updateSensor } = useUpdateSensor();
   const { mutate: insertNotification } = useInsertNotification();
+
+  const router = useRouter();
 
   useUpdateSensorListener();
 
@@ -106,17 +108,15 @@ const DeviceDetailsScreen = () => {
   };
 
   return (
-    <View>
-      <Stack.Screen
-        options={{
-          title: categoryCapitalized,
-          headerStyle: {
-            backgroundColor: isDarkMode ? 'black' : 'white',
-          },
-          headerTintColor: isDarkMode ? 'white' : 'black',
-        }}
-      />
-      <View className="min-h-full dark:bg-zinc-950">
+    <View className="flex-1 pt-14 dark:bg-black">
+      <View className="ml-5">
+        <Pressable className=" flex flex-row items-center" onPress={() => router.back()}>
+          <Ionicons name="chevron-back" size={24} color="grey" />
+          <Text className="ml-2 text-2xl font-semibold dark:text-white">{categoryCapitalized}</Text>
+        </Pressable>
+      </View>
+      <View className="mt-4 border-b border-zinc-800" />
+      <View className="">
         <View className="mx-5 mt-5 rounded-lg border border-zinc-800">
           {sensor
             ?.filter((s) => s.category === category)
@@ -125,16 +125,19 @@ const DeviceDetailsScreen = () => {
               <View
                 key={s.id}
                 className="flex flex-row items-center justify-between space-x-4 border-b border-zinc-800">
-                <Text className="rounded-md p-5 text-lg font-medium text-white">
+                <Text className="rounded-md p-5 text-lg font-medium dark:text-white">
                   {s.name[0].toUpperCase() + s.name.slice(1)} + id: {s.id} + value {s.value}
                 </Text>
                 <Switch
-                  trackColor={{ false: '#27272a', true: '#fafafa' }}
-                  thumbColor={statusMap[s.id] === 'on' ? '#09090b' : '#09090b'}
+                  trackColor={{ false: '#27272a', true: '#84cc16' }}
+                  thumbColor="#e4e4e7"
                   ios_backgroundColor="#27272a"
                   onValueChange={() => toggleSwitch(s.id)}
                   value={statusMap[s.id] === 'on'}
-                  style={{ transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }], marginRight: 5 }}
+                  style={{
+                    borderRadius: 16,
+                    marginRight: 10,
+                  }}
                 />
               </View>
             ))}

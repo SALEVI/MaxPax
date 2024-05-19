@@ -9,9 +9,8 @@ import { useSensorList, useUpdateSensor } from '~/api/sensors';
 import { useUpdateSensorListener } from '~/api/sensors/subscriptions';
 import CategoryListItem from '~/components/CategoryListItem';
 import SidescrollingText from '~/components/SidescrollingText';
+import { useSensor } from '~/providers/SensorProvider';
 import { notifyUser } from '~/utils/notifications';
-// import { Tables } from '~/database.types';
-// import { Tables } from '~/types';
 
 // This might be unnecessary since of v4 nativewind
 remapProps(FlatList, {
@@ -29,6 +28,7 @@ export default function Home() {
   } = useNotificationLatest();
   const { mutate: updateSensor } = useUpdateSensor();
   const { mutate: insertNotification } = useInsertNotification();
+  const { colorScheme, toggleColorScheme } = useSensor();
 
   const [statusMap, setStatusMap] = useState<{ [key: number]: string }>({});
 
@@ -149,50 +149,66 @@ export default function Home() {
     <>
       <Stack.Screen options={{ title: 'Home' }} />
       {/* Maybe redo this into a Header component */}
-      <View className="flex-1 dark:bg-black">
+      <View className="flex-1 bg-zinc-100 dark:bg-black">
         <View
           className={`min-h-[40%] w-full pl-3 pt-1 ${
             selectedPreset === 'Away'
-              ? 'dark:bg-lime-500'
+              ? 'bg-lime-500'
               : selectedPreset === 'Home'
-                ? 'dark:bg-amber-400'
+                ? 'bg-amber-400'
                 : selectedPreset === 'Disarmed'
-                  ? 'dark:bg-red-600'
-                  : 'dark:bg-transparent'
+                  ? 'bg-red-600'
+                  : 'bg-transparent'
           }`}>
           <View className="mt-5 flex-1 flex-col justify-evenly">
-            <View>
-              <Text className="ml-2 mt-3 text-4xl font-semibold antialiased">Your home is</Text>
-              <Text className="ml-2 mt-1 text-5xl font-extrabold antialiased">
-                {selectedPreset === 'Away'
-                  ? 'Secured'
-                  : selectedPreset === 'Home'
-                    ? 'Welcoming'
-                    : selectedPreset === 'Disarmed'
-                      ? 'Unsecured'
-                      : 'dark:bg-transparent'}
-              </Text>
+            <View className="flex flex-row justify-between">
+              <View>
+                <Text className="ml-2 mt-3 text-4xl font-semibold antialiased">Your home is</Text>
+                <Text className="ml-2 mt-1 text-5xl font-extrabold antialiased">
+                  {selectedPreset === 'Away'
+                    ? 'Secured'
+                    : selectedPreset === 'Home'
+                      ? 'Welcoming'
+                      : selectedPreset === 'Disarmed'
+                        ? 'Unsecured'
+                        : 'bg-transparent'}
+                </Text>
+              </View>
+              <Pressable
+                onPress={toggleColorScheme}
+                className={`mr-8 mt-3 flex flex-row items-center self-center rounded-full px-3 py-1 ${
+                  selectedPreset === 'Away'
+                    ? 'bg-lime-600'
+                    : selectedPreset === 'Home'
+                      ? 'bg-amber-500'
+                      : selectedPreset === 'Disarmed'
+                        ? 'bg-red-700'
+                        : 'bg-transparent'
+                }`}>
+                <Text className="text-sm font-extrabold text-zinc-300 antialiased">switch to </Text>
+                <Text className="text-3xl">{`${colorScheme === 'dark' ? '🌞' : '🌙'}`}</Text>
+              </Pressable>
             </View>
             <View
               className={`mx-3 mb-14 mr-7 flex h-14 flex-row items-center justify-evenly rounded-lg p-1 px-2  ${
                 selectedPreset === 'Away'
-                  ? 'dark:bg-lime-600'
+                  ? 'bg-lime-600'
                   : selectedPreset === 'Home'
-                    ? 'dark:bg-amber-500'
+                    ? 'bg-amber-500'
                     : selectedPreset === 'Disarmed'
-                      ? 'dark:bg-red-700'
-                      : 'dark:bg-transparent'
+                      ? 'bg-red-700'
+                      : 'bg-transparent'
               }`}>
               <Pressable
                 android_ripple={{ color: '#d97706', radius: 58 }}
                 className={`mr-2 h-full w-1/3 flex-row items-center justify-center rounded-md ${
                   selectedPreset === 'Away'
-                    ? 'dark:bg-orange-500'
+                    ? 'bg-orange-500'
                     : selectedPreset === 'Home'
-                      ? 'dark:bg-transparent'
+                      ? 'bg-transparent'
                       : selectedPreset === 'Disarmed'
-                        ? 'dark:bg-transparent'
-                        : 'dark:bg-transparent'
+                        ? 'bg-transparent'
+                        : 'bg-transparent'
                 }`}
                 onPress={() => {
                   setSelectedPreset('Away');
@@ -213,12 +229,12 @@ export default function Home() {
                 <Text
                   className={`ml-1 ${
                     selectedPreset === 'Away'
-                      ? 'text-xl font-bold dark:text-white'
+                      ? 'text-xl font-bold text-white'
                       : selectedPreset === 'Home'
                         ? 'text-xl font-semibold'
                         : selectedPreset === 'Disarmed'
                           ? 'text-xl font-semibold'
-                          : 'dark:bg-transparent'
+                          : 'bg-transparent'
                   }`}>
                   Away
                 </Text>
@@ -227,12 +243,12 @@ export default function Home() {
                 android_ripple={{ color: '#451a03', radius: 58 }}
                 className={`mr-2 h-full w-1/3 flex-row items-center justify-center rounded-md ${
                   selectedPreset === 'Away'
-                    ? 'dark:bg-transparent'
+                    ? 'bg-transparent'
                     : selectedPreset === 'Home'
-                      ? 'dark:bg-orange-900'
+                      ? 'bg-orange-900'
                       : selectedPreset === 'Disarmed'
-                        ? 'dark:bg-transparent'
-                        : 'dark:bg-transparent'
+                        ? 'bg-transparent'
+                        : 'bg-transparent'
                 }`}
                 onPress={() => {
                   setSelectedPreset('Home');
@@ -255,10 +271,10 @@ export default function Home() {
                     selectedPreset === 'Away'
                       ? 'text-xl font-semibold'
                       : selectedPreset === 'Home'
-                        ? 'text-xl font-bold dark:text-white'
+                        ? 'text-xl font-bold text-white'
                         : selectedPreset === 'Disarmed'
                           ? 'text-xl font-semibold'
-                          : 'dark:bg-transparent'
+                          : 'bg-transparent'
                   }`}>
                   Home
                 </Text>
@@ -267,12 +283,12 @@ export default function Home() {
                 android_ripple={{ color: '#09090b', radius: 58 }}
                 className={`h-full w-1/3 flex-row items-center justify-center rounded-md ${
                   selectedPreset === 'Away'
-                    ? 'dark:bg-transparent'
+                    ? 'bg-transparent'
                     : selectedPreset === 'Home'
-                      ? 'dark:bg-transparent'
+                      ? 'bg-transparent'
                       : selectedPreset === 'Disarmed'
-                        ? 'dark:bg-zinc-900'
-                        : 'dark:bg-transparent'
+                        ? 'bg-zinc-900'
+                        : 'bg-transparent'
                 }`}
                 onPress={() => setSelectedPreset('Disarmed')}>
                 <MaterialCommunityIcons
@@ -295,8 +311,8 @@ export default function Home() {
                       : selectedPreset === 'Home'
                         ? 'text-xl font-semibold '
                         : selectedPreset === 'Disarmed'
-                          ? 'text-xl font-bold dark:text-white'
-                          : 'dark:bg-transparent'
+                          ? 'text-xl font-bold text-white'
+                          : 'bg-transparent'
                   }`}>
                   Disarmed
                 </Text>
@@ -304,15 +320,21 @@ export default function Home() {
             </View>
           </View>
         </View>
-        <View className="bottom-12 flex-1 bg-white py-2 dark:bg-black" style={{ borderRadius: 30 }}>
+        <View
+          className="bottom-12 flex-1 bg-zinc-100 py-2 dark:bg-black"
+          style={{ borderRadius: 30 }}>
           <View className="flex-row items-center pl-5 pt-3 ">
-            <MaterialIcons name="sensors" size={36} color="white" />
+            <MaterialIcons
+              name="sensors"
+              size={36}
+              color={colorScheme === 'dark' ? 'white' : 'black'}
+            />
             <Text className="pl-2 text-3xl font-bold dark:text-zinc-50">Sensors</Text>
           </View>
 
           {/* Add a text to say this is latest notification */}
           {/* <Text className="ml-5 mt-10 dark:text-white">Latest Notification</Text> */}
-          <View className="mx-5 mt-10 h-10 flex-row items-center rounded-lg dark:bg-zinc-900">
+          <View className="mx-5 mt-10 h-11 flex-row items-center rounded-lg bg-zinc-900">
             <SidescrollingText
               title={latestNotification?.title}
               body={latestNotification?.body}
@@ -326,7 +348,8 @@ export default function Home() {
               <CategoryListItem
                 sensor={item}
                 statusMap={statusMap}
-                toggleAllSensorsInCategory={toggleAllSensorsInCategory} // Pass the function here
+                toggleAllSensorsInCategory={toggleAllSensorsInCategory}
+                colorScheme={colorScheme}
               />
             )}
             numColumns={2}

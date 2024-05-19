@@ -4,7 +4,7 @@ import { View, Text, Pressable } from 'react-native';
 
 import SettingsListItemSensor from './SettingsListItemSensor';
 
-const SettingsPreset = ({ presetName, preset }) => {
+const SettingsPreset = ({ presetName, preset, colorScheme }) => {
   const [isEnabled, setIsEnabled] = useState(false);
   const [dropDownIcon, setDropDownIcon] = useState('chevron-down');
 
@@ -22,7 +22,7 @@ const SettingsPreset = ({ presetName, preset }) => {
   }, {});
 
   return (
-    <View className="my-2 rounded-lg p-5 dark:bg-zinc-900">
+    <View className="my-2 rounded-lg bg-zinc-300 p-5 dark:bg-zinc-900">
       <Pressable
         onPress={() => {
           setIsEnabled(!isEnabled);
@@ -38,11 +38,11 @@ const SettingsPreset = ({ presetName, preset }) => {
       {Object.keys(groupedSensors).map((category) => (
         <View key={category} className={`mb-2 ${isEnabled ? 'flex' : 'hidden'}`}>
           <View className="flex flex-row items-center justify-between py-2">
-            <View className="w-1/3 dark:bg-zinc-800" style={{ height: 1 }} />
+            <View className="w-1/3 bg-zinc-100 dark:bg-zinc-800" style={{ height: 1 }} />
             <Text className="font-semibold dark:text-zinc-400">
               {category[0].toUpperCase() + category.slice(1)}
             </Text>
-            <View className="w-1/3 dark:bg-zinc-800" style={{ height: 1 }} />
+            <View className="w-1/3 bg-zinc-100 dark:bg-zinc-800" style={{ height: 1 }} />
           </View>
           {groupedSensors[category].map((sensor) => (
             <View key={sensor.id}>
@@ -51,6 +51,7 @@ const SettingsPreset = ({ presetName, preset }) => {
                 iconName="flash-outline"
                 preset={sensor}
                 presetName={presetName}
+                colorScheme={colorScheme}
               />
             </View>
           ))}

@@ -1,23 +1,37 @@
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import * as NavigationBar from 'expo-navigation-bar';
 import { Link, Redirect, Tabs } from 'expo-router';
-import { useColorScheme } from 'react-native';
+import React from 'react';
 
 import { HeaderButton } from '../../components/HeaderButton';
 
 import { useAuth } from '~/providers/AuthProvider';
+import { useSensor } from '~/providers/SensorProvider';
 
 export default function TabLayout() {
   const { session } = useAuth();
-  const isDarkMode = useColorScheme() === 'dark';
+  const { colorScheme, toggleColorScheme } = useSensor();
 
   if (!session) {
     return <Redirect href="/" />;
   }
 
+  NavigationBar.setBackgroundColorAsync(colorScheme === 'dark' ? 'black' : '#fafafa');
+  NavigationBar.setButtonStyleAsync(colorScheme === 'dark' ? 'light' : 'dark');
+
+  // Function to get the correct icon color based on the color scheme
+  const getIconColor = (focused) => {
+    if (colorScheme === 'dark') {
+      return focused ? 'white' : 'gray'; // Dark mode: White icons when focused, gray otherwise
+    } else {
+      return focused ? 'black' : 'gray'; // Light mode: Black icons when focused, gray otherwise
+    }
+  };
+
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: isDarkMode ? 'white' : 'black', // Active tint color
+        tabBarActiveTintColor: colorScheme === 'dark' ? 'white' : 'black', // Active tint color
         tabBarInactiveTintColor: 'gray', // Inactive tint color
       }}>
       <Tabs.Screen name="index" options={{ href: null }} />
@@ -27,14 +41,14 @@ export default function TabLayout() {
           title: 'Home',
           headerShown: false,
           tabBarShowLabel: false,
-          tabBarStyle: { backgroundColor: isDarkMode ? 'black' : 'white' },
-          tabBarIcon: ({ focused }) => {
-            // Explicitly set the icon color based on whether the tab is focused (active)
-            const iconColor = focused ? 'white' : 'gray'; // Adjust 'gray' to the desired inactive color
-            return (
-              <Ionicons name={focused ? 'home' : 'home-outline'} size={28} color={iconColor} />
-            );
-          },
+          tabBarStyle: { backgroundColor: colorScheme === 'dark' ? 'black' : '#fafafa' },
+          tabBarIcon: ({ focused }) => (
+            <Ionicons
+              name={focused ? 'home' : 'home-outline'}
+              size={28}
+              color={getIconColor(focused)}
+            />
+          ),
           headerRight: () => (
             <Link href="/modal" asChild>
               <HeaderButton />
@@ -47,15 +61,22 @@ export default function TabLayout() {
         name="sensors"
         options={{
           tabBarShowLabel: false,
-          tabBarStyle: { backgroundColor: isDarkMode ? 'black' : 'white' },
+          tabBarStyle: { backgroundColor: colorScheme === 'dark' ? 'black' : '#fafafa' },
           title: 'Sensors',
           headerStyle: {
-            backgroundColor: isDarkMode ? 'black' : 'white',
+            backgroundColor: colorScheme === 'dark' ? 'black' : '#fafafa',
           },
-          headerTintColor: isDarkMode ? 'white' : 'black',
-          tabBarIcon: ({ color }) => <MaterialIcons name="sensors" size={28} color={color} />,
+          headerTintColor: colorScheme === 'dark' ? 'white' : 'black',
+          tabBarIcon: ({ focused }) => (
+            <MaterialIcons name="sensors" size={28} color={getIconColor(focused)} />
+          ),
           headerLeft: () => (
-            <MaterialIcons name="sensors" size={24} color="white" className="ml-5 items-center" />
+            <MaterialIcons
+              name="sensors"
+              size={24}
+              color={getIconColor(true)}
+              className="ml-5 items-center"
+            /> // Assuming always visible in light mode
           ),
         }}
       />
@@ -64,28 +85,26 @@ export default function TabLayout() {
         name="notifications"
         options={{
           tabBarShowLabel: false,
-          tabBarStyle: { backgroundColor: isDarkMode ? 'black' : 'white' },
+          tabBarStyle: { backgroundColor: colorScheme === 'dark' ? 'black' : '#fafafa' },
           title: 'Notifications',
           headerStyle: {
-            backgroundColor: isDarkMode ? 'black' : 'white',
+            backgroundColor: colorScheme === 'dark' ? 'black' : '#fafafa',
           },
-          headerTintColor: isDarkMode ? 'white' : 'black',
-          tabBarIcon: ({ color, focused }) => {
-            return (
-              <MaterialIcons
-                name={focused ? 'notifications' : 'notifications-none'}
-                size={28}
-                color={color}
-              />
-            );
-          },
+          headerTintColor: colorScheme === 'dark' ? 'white' : 'black',
+          tabBarIcon: ({ focused }) => (
+            <MaterialIcons
+              name={focused ? 'notifications' : 'notifications-none'}
+              size={28}
+              color={getIconColor(focused)}
+            />
+          ),
           headerLeft: () => (
             <MaterialIcons
               name="notifications"
               size={24}
-              color="white"
+              color={getIconColor(true)}
               className="ml-5 items-center"
-            />
+            /> // Assuming always visible in light mode
           ),
         }}
       />
@@ -94,19 +113,26 @@ export default function TabLayout() {
         name="settings"
         options={{
           tabBarShowLabel: false,
-          tabBarStyle: { backgroundColor: isDarkMode ? 'black' : 'white' },
+          tabBarStyle: { backgroundColor: colorScheme === 'dark' ? 'black' : '#fafafa' },
           title: 'Settings',
           headerStyle: {
-            backgroundColor: isDarkMode ? 'black' : 'white',
+            backgroundColor: colorScheme === 'dark' ? 'black' : '#fafafa',
           },
-          headerTintColor: isDarkMode ? 'white' : 'black',
-          tabBarIcon: ({ color, focused }) => {
-            return (
-              <Ionicons name={focused ? 'settings' : 'settings-outline'} size={28} color={color} />
-            );
-          },
+          headerTintColor: colorScheme === 'dark' ? 'white' : 'black',
+          tabBarIcon: ({ focused }) => (
+            <Ionicons
+              name={focused ? 'settings' : 'settings-outline'}
+              size={28}
+              color={getIconColor(focused)}
+            />
+          ),
           headerLeft: () => (
-            <Ionicons name="settings" size={24} color="white" className="ml-5 items-center" />
+            <Ionicons
+              name="settings"
+              size={24}
+              color={getIconColor(true)}
+              className="ml-5 items-center"
+            /> // Assuming always visible in light mode
           ),
         }}
       />

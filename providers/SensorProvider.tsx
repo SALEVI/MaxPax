@@ -1,9 +1,15 @@
+import { useColorScheme } from 'nativewind';
 import { PropsWithChildren, createContext, useContext } from 'react';
 
 const SensorContext = createContext({});
 
 const SensorProvider = ({ children }: PropsWithChildren) => {
-  return <SensorContext.Provider value={{}}>{children}</SensorContext.Provider>;
+  const { colorScheme, toggleColorScheme } = useColorScheme();
+  return (
+    <SensorContext.Provider value={{ colorScheme, toggleColorScheme }}>
+      {children}
+    </SensorContext.Provider>
+  );
 };
 
 export default SensorProvider;

@@ -15,20 +15,20 @@ const SidescrollingText = ({ title, body, created_at }) => {
 
   return (
     <ScrollView
-      className="mr-3"
+      className="mr-2"
       contentContainerStyle={{
         alignItems: 'center',
       }}
       horizontal
       showsHorizontalScrollIndicator={false}>
-      <Ionicons name="chevron-forward" size={20} color="white" className="ml-2 mr-3" />
+      <Ionicons name="chevron-forward" size={20} color="white" className="ml-2" />
       <MaterialIcons name="notifications-on" size={20} color="white" />
       <TouchableOpacity onPress={handlePress}>
-        <Text className="ml-2 self-center text-lg font-semibold dark:text-white">
+        <Text className="ml-2 self-center text-lg font-semibold text-white">
           {title} {body}
         </Text>
       </TouchableOpacity>
-      <Text className="text-md ml-2 self-center font-thin dark:text-zinc-300">
+      <Text className="text-md ml-2 self-center font-thin text-zinc-300">
         {dayjs(created_at).format('llll')}
       </Text>
     </ScrollView>

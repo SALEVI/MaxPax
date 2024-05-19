@@ -4,7 +4,7 @@ import { View, Text, Switch } from 'react-native';
 
 import { useUpdatePresetAway, useUpdatePresetHome, useUpdatePresetDisarmed } from '~/api/presets';
 
-const SettingsListItemSensor = ({ settingName, iconName, preset, presetName }) => {
+const SettingsListItemSensor = ({ settingName, iconName, preset, presetName, colorScheme }) => {
   const { mutate: updatePresetAway } = useUpdatePresetAway();
   const { mutate: updatePresetHome } = useUpdatePresetHome();
   const { mutate: updatePresetDisarmed } = useUpdatePresetDisarmed();
@@ -38,10 +38,14 @@ const SettingsListItemSensor = ({ settingName, iconName, preset, presetName }) =
 
   return (
     <View className="mt-3">
-      <View className="flex h-14 flex-row justify-between rounded-lg pl-4 dark:bg-black">
+      <View className="flex h-14 flex-row justify-between rounded-lg bg-zinc-200 pl-4 dark:bg-black">
         <View className="justify-center">
           <View className="flex flex-row items-center">
-            <Ionicons name={iconName} size={22} color="white" />
+            <Ionicons
+              name={iconName}
+              size={22}
+              color={`${colorScheme === 'dark' ? 'white' : 'black'}`}
+            />
             <Text className="pl-8 text-lg font-medium dark:text-zinc-300">{settingName}</Text>
           </View>
         </View>

@@ -13,10 +13,12 @@ import SettingsListItem from '../../../components/SettingsListItem';
 
 import { usePresetAwayList, usePresetDisarmedList, usePresetHomeList } from '~/api/presets';
 import SettingsPreset from '~/components/SettingsPreset';
+import { useSensor } from '~/providers/SensorProvider';
 import { supabase } from '~/utils/supabase';
 
 export default function Home() {
   const router = useRouter();
+  const { colorScheme, toggleColorScheme } = useSensor();
 
   const {
     // refetch: refetchPresetAway,
@@ -78,14 +80,22 @@ export default function Home() {
           <Text className=" pb-3 pt-5 text-2xl font-bold antialiased dark:text-zinc-100">
             Preference
           </Text>
-          <SettingsListItem settingsName={settingsName} iconName="notifications-off-outline" />
+          <SettingsListItem
+            settingsName={settingsName}
+            iconName="notifications-off-outline"
+            colorScheme={colorScheme}
+          />
 
           <Text className=" pb-3 text-2xl font-bold antialiased dark:text-zinc-100">Presets</Text>
 
           <View>
-            <SettingsPreset presetName="Away" preset={presetAway} />
-            <SettingsPreset presetName="Home" preset={presetHome} />
-            <SettingsPreset presetName="Disarmed" preset={presetDisarmed} />
+            <SettingsPreset presetName="Away" preset={presetAway} colorScheme={colorScheme} />
+            <SettingsPreset presetName="Home" preset={presetHome} colorScheme={colorScheme} />
+            <SettingsPreset
+              presetName="Disarmed"
+              preset={presetDisarmed}
+              colorScheme={colorScheme}
+            />
           </View>
 
           <View className="mt-5 border dark:border-zinc-900" />
