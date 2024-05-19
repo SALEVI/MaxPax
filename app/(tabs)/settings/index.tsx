@@ -1,6 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { View, Text, Pressable, ScrollView, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  Pressable,
+  ScrollView,
+  ActivityIndicator,
+  TouchableOpacity,
+} from 'react-native';
 
 import SettingsListItem from '../../../components/SettingsListItem';
 
@@ -82,14 +89,18 @@ export default function Home() {
           </View>
 
           <View className="mt-5 border dark:border-zinc-900" />
-          <Pressable onPress={signOutUser} className="-ml-3 mb-5 mt-3">
+          <View className="-ml-3 mb-5 mt-3">
+            {/* <Pressable onPress={signOutUser} className="-ml-3 mb-5 mt-3"> */}
             <View className="flex flex-row items-center px-5 dark:bg-black">
               <Ionicons name="log-out-outline" size={26} color="#dc2626" />
-              <Text className="pl-3 text-2xl font-bold antialiased dark:text-zinc-200">
-                Sign out
-              </Text>
+              <TouchableOpacity onPress={signOutUser}>
+                <Text className="pl-3 text-2xl font-bold antialiased dark:text-zinc-200">
+                  Sign out
+                </Text>
+              </TouchableOpacity>
             </View>
-          </Pressable>
+          </View>
+          {/* </Pressable> */}
         </View>
       </ScrollView>
     </>

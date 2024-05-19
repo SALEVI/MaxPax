@@ -1,8 +1,8 @@
-import { MaterialIcons, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Stack } from 'expo-router';
 import { remapProps } from 'nativewind';
 import { useEffect, useState } from 'react';
-import { View, FlatList, Text, ActivityIndicator, Pressable, ScrollView } from 'react-native';
+import { View, FlatList, Text, ActivityIndicator, Pressable } from 'react-native';
 
 import { useInsertNotification, useNotificationLatest } from '~/api/notifications';
 import { useSensorList, useUpdateSensor } from '~/api/sensors';
@@ -310,7 +310,9 @@ export default function Home() {
             <Text className="pl-2 text-3xl font-bold dark:text-zinc-50">Sensors</Text>
           </View>
 
-          <View className="mx-5 mt-10 h-12 flex-row items-center rounded-lg dark:bg-zinc-900">
+          {/* Add a text to say this is latest notification */}
+          {/* <Text className="ml-5 mt-10 dark:text-white">Latest Notification</Text> */}
+          <View className="mx-5 mt-10 h-10 flex-row items-center rounded-lg dark:bg-zinc-900">
             <SidescrollingText
               title={latestNotification?.title}
               body={latestNotification?.body}
