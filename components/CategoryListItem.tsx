@@ -34,10 +34,10 @@ const CategoryListItem = ({
 }: CategoryListItemProps) => {
   const [isPressed, setIsPressed] = useState(false);
 
-  const handlePress = () => {
-    toggleAllSensorsInCategory(sensor.category);
-    setIsPressed(!isPressed);
-  };
+  // const handlePress = () => {
+  //   toggleAllSensorsInCategory(sensor.category);
+  //   setIsPressed(!isPressed);
+  // };
 
   return (
     <Link
@@ -52,13 +52,13 @@ const CategoryListItem = ({
           resizeMode="cover"
           imageStyle={{ borderRadius: 10 }}>
           <View className="min-h-28 min-w-52 basis-1/4 backdrop-blur-sm dark:bg-black/25">
-            <View className="ml-3 mr-2 flex-1 justify-evenly">
+            <View className="ml-3 mr-2 mt-3 flex-1">
               <View>
                 <Text className="text-xl font-bold text-slate-200 dark:text-zinc-50">
                   {sensor.category[0].toUpperCase() + sensor.category.slice(1)}
                 </Text>
               </View>
-              <Pressable
+              {/* <Pressable
                 //border or borderless hmm
                 android_ripple={{ color: '#d9f99d', radius: 22, borderless: true }}
                 onPress={handlePress}
@@ -68,7 +68,7 @@ const CategoryListItem = ({
                   size={18}
                   color={`${colorScheme === 'dark' ? 'black' : 'white'}`}
                 />
-              </Pressable>
+              </Pressable> */}
             </View>
           </View>
         </ImageBackground>
