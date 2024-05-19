@@ -61,6 +61,7 @@ const SensorsScreen = () => {
   }, {});
 
   return (
+    //color scheme not working
     //Might need to modify the contentContainerStyle if this wrecks srolling, need bigger data pull to see
     <ScrollView
       className="flex-1 dark:bg-black"

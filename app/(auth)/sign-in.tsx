@@ -48,7 +48,7 @@ const SignInScreen = () => {
             intensity={30}
             tint="systemThickMaterialDark"
             experimentalBlurMethod="dimezisBlurView"
-            className="mx-5 flex h-96 justify-center rounded-2xl"
+            className="mx-5 flex justify-center rounded-2xl py-10"
             style={{ overflow: 'hidden' }}>
             <View className=" w-full items-center justify-center">
               <TextInput
@@ -88,11 +88,11 @@ const SignInScreen = () => {
                 )}
               </Pressable>
 
-              <Link
+              {/* <Link
                 href="/sign-up"
                 className="mt-2 items-center text-lg font-bold dark:text-lime-500">
                 Create an account
-              </Link>
+              </Link> */}
             </View>
           </BlurView>
         </View>

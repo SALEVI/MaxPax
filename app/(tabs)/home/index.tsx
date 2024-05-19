@@ -373,7 +373,7 @@ export default function Home() {
             />
           </View>
           <FlatList
-            contentContainerClassName="flex-grow flex-row flex-wrap justify-around gap-4 p-5 mt-10"
+            contentContainerClassName="flex flex-row flex-wrap justify-around gap-4 p-5 mt-10"
             data={uniqueCategories}
             renderItem={({ item }) => (
               <CategoryListItem
