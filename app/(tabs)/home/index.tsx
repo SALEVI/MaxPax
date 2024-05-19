@@ -1,13 +1,14 @@
-import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialIcons, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { Stack } from 'expo-router';
 import { remapProps } from 'nativewind';
 import { useEffect, useState } from 'react';
-import { View, FlatList, Text, ActivityIndicator, Pressable } from 'react-native';
+import { View, FlatList, Text, ActivityIndicator, Pressable, ScrollView } from 'react-native';
 
-import { useInsertNotification } from '~/api/notifications';
+import { useInsertNotification, useNotificationLatest } from '~/api/notifications';
 import { useSensorList, useUpdateSensor } from '~/api/sensors';
 import { useUpdateSensorListener } from '~/api/sensors/subscriptions';
 import CategoryListItem from '~/components/CategoryListItem';
+import SidescrollingText from '~/components/SidescrollingText';
 import { notifyUser } from '~/utils/notifications';
 // import { Tables } from '~/database.types';
 // import { Tables } from '~/types';
@@ -21,6 +22,11 @@ remapProps(FlatList, {
 
 export default function Home() {
   const { data: sensors, error, isLoading } = useSensorList();
+  const {
+    data: latestNotification,
+    error: latestNotificationError,
+    isLoading: latestNotificationIsLoading,
+  } = useNotificationLatest();
   const { mutate: updateSensor } = useUpdateSensor();
   const { mutate: insertNotification } = useInsertNotification();
 
@@ -75,11 +81,27 @@ export default function Home() {
   }, [sensors]);
 
   if (isLoading) {
-    return <ActivityIndicator size="large" color="#84cc16" />;
+    return (
+      <View className="flex-1 items-center justify-center dark:bg-black">
+        <ActivityIndicator size="large" color="#84cc16" />
+      </View>
+    );
   }
 
   if (error) {
-    return <Text>Failed to load data</Text>;
+    return <Text>Failed to load sensor data</Text>;
+  }
+
+  if (latestNotificationIsLoading) {
+    return (
+      <View className="flex-1 items-center justify-center dark:bg-black">
+        <ActivityIndicator size="large" color="#84cc16" />
+      </View>
+    );
+  }
+
+  if (latestNotificationError) {
+    return <Text>Failed to load latest notification data</Text>;
   }
 
   // Sort sensors by id before reducing to unique categories
@@ -162,6 +184,7 @@ export default function Home() {
                       : 'dark:bg-transparent'
               }`}>
               <Pressable
+                android_ripple={{ color: '#d97706', radius: 58 }}
                 className={`mr-2 h-full w-1/3 flex-row items-center justify-center rounded-md ${
                   selectedPreset === 'Away'
                     ? 'dark:bg-orange-500'
@@ -201,6 +224,7 @@ export default function Home() {
                 </Text>
               </Pressable>
               <Pressable
+                android_ripple={{ color: '#451a03', radius: 58 }}
                 className={`mr-2 h-full w-1/3 flex-row items-center justify-center rounded-md ${
                   selectedPreset === 'Away'
                     ? 'dark:bg-transparent'
@@ -240,6 +264,7 @@ export default function Home() {
                 </Text>
               </Pressable>
               <Pressable
+                android_ripple={{ color: '#09090b', radius: 58 }}
                 className={`h-full w-1/3 flex-row items-center justify-center rounded-md ${
                   selectedPreset === 'Away'
                     ? 'dark:bg-transparent'
@@ -285,10 +310,12 @@ export default function Home() {
             <Text className="pl-2 text-3xl font-bold dark:text-zinc-50">Sensors</Text>
           </View>
 
-          <View className="mx-5 mt-10 h-14 justify-center rounded-lg dark:bg-zinc-900">
-            <Text className="self-center text-lg font-semibold dark:text-white">
-              Latest Notification
-            </Text>
+          <View className="mx-5 mt-10 h-12 flex-row items-center rounded-lg dark:bg-zinc-900">
+            <SidescrollingText
+              title={latestNotification?.title}
+              body={latestNotification?.body}
+              created_at={latestNotification?.created_at}
+            />
           </View>
           <FlatList
             contentContainerClassName="flex-grow flex-row flex-wrap justify-around gap-4 p-5 mt-10"

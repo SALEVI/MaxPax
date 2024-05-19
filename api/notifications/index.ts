@@ -19,6 +19,25 @@ export const useNotificationList = () => {
   });
 };
 
+export const useNotificationLatest = () => {
+  return useQuery({
+    //maybe rename to sensor_data?
+    queryKey: ['notifications', 'latest'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('notifications')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+      if (error) {
+        throw new Error(error.message);
+      }
+      return data;
+    },
+  });
+};
+
 export const useInsertNotification = () => {
   const queryClient = useQueryClient();
 
@@ -42,6 +61,7 @@ export const useInsertNotification = () => {
     async onSuccess() {
       console.log('success: notification added');
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['notifications', 'latest'] });
     },
     onError(error) {
       console.log(error);

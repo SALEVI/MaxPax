@@ -57,6 +57,8 @@ const CategoryListItem = ({
                 </Text>
               </View>
               <Pressable
+                //border or borderless hmm
+                android_ripple={{ color: '#d9f99d', radius: 22, borderless: true }}
                 onPress={handlePress}
                 className="w-10 items-center self-end rounded-full p-2 dark:bg-lime-500">
                 <Ionicons name="power" size={18} color="black" />
