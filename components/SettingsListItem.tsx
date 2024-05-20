@@ -21,7 +21,7 @@ const SettingsListItem = ({
           <Text className="pl-8 text-lg font-medium dark:text-zinc-300">{settingsName}</Text>
         </View>
       </View>
-      <View className="mr-2">
+      <View className="mr-2 justify-center">
         <Switch
           trackColor={{ false: '#27272a', true: '#84cc16' }}
           thumbColor="#e4e4e7"

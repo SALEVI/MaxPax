@@ -15,7 +15,7 @@ const SensorsListItem = ({ settingsName, iconName, colorScheme, toggleSwitch, id
           <Text className="pl-8 text-lg font-medium dark:text-zinc-300">{settingsName}</Text>
         </View>
       </View>
-      <View className="mr-1">
+      <View className="mr-1 justify-center">
         <Switch
           trackColor={{ false: '#27272a', true: '#84cc16' }}
           thumbColor="#e4e4e7"
