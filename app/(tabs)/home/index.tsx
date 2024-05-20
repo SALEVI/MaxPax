@@ -1,4 +1,4 @@
-import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialIcons, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Stack } from 'expo-router';
 import { remapProps } from 'nativewind';
@@ -82,6 +82,58 @@ export default function Home() {
 
   //After loging in always looking for notifications
   useUpdateSensorListener();
+
+  const [isItACustomPreset, setIsItACustomPreset] = useState(false);
+
+  const checkIfOnAPreset = (sensors, presetAwayData, presetHomeData, presetDisarmedData) => {
+    let isItACustomPreset = true; // Assume it's a custom preset
+
+    // Helper function to check if a sensor matches a preset
+    const sensorMatchesPreset = (sensorId, sensorStatus, presetData) => {
+      return presetData.some(
+        (presetSensor) => presetSensor.id === sensorId && presetSensor.status === sensorStatus
+      );
+    };
+
+    // Arrays to store match results
+    const matchesAwayArray = [];
+    const matchesHomeArray = [];
+    const matchesDisarmedArray = [];
+
+    // Iterate over each sensor
+    sensors.forEach((sensor) => {
+      // Check if the sensor matches any preset and store the result in the corresponding array
+      matchesAwayArray.push(sensorMatchesPreset(sensor.id, sensor.status, presetAwayData));
+      matchesHomeArray.push(sensorMatchesPreset(sensor.id, sensor.status, presetHomeData));
+      matchesDisarmedArray.push(sensorMatchesPreset(sensor.id, sensor.status, presetDisarmedData));
+    });
+
+    console.log('MatchesAway:', matchesAwayArray);
+    console.log('MatchesHome:', matchesHomeArray);
+    console.log('MatchesDisarmed:', matchesDisarmedArray);
+
+    // Check if any of the arrays contain only true values
+    if (
+      matchesAwayArray.every((match) => match === true) ||
+      matchesHomeArray.every((match) => match === true) ||
+      matchesDisarmedArray.every((match) => match === true)
+    ) {
+      isItACustomPreset = false;
+    }
+
+    // Update the state with the result
+    setIsItACustomPreset(isItACustomPreset);
+    console.log('Is it a custom preset?', isItACustomPreset);
+  };
+
+  // Call checkIfOnAPreset when the component mounts and all necessary data has been loaded
+  useEffect(() => {
+    if (sensors && presetAwayData && presetHomeData && presetDisarmedData) {
+      console.log('Calling checkIfOnAPreset...'); // Log when the function is called
+      checkIfOnAPreset(sensors, presetAwayData, presetHomeData, presetDisarmedData);
+      console.log('Is it a custom preset?', isItACustomPreset);
+    }
+  }, [sensors, presetAwayData, presetHomeData, presetDisarmedData]); // Dependencies
 
   useEffect(() => {
     // Check status changes when sensor data changes
@@ -286,63 +338,80 @@ export default function Home() {
       <View className="flex-1 bg-zinc-100 dark:bg-black">
         <View
           className={`min-h-[40%] w-full pl-3 pt-1 ${
-            selectedPreset === 'Away'
-              ? 'bg-lime-500'
-              : selectedPreset === 'Home'
-                ? 'bg-amber-400'
-                : selectedPreset === 'Disarmed'
-                  ? 'bg-red-600'
-                  : 'bg-transparent'
+            isItACustomPreset
+              ? 'bg-stone-300'
+              : selectedPreset === 'Away'
+                ? 'bg-lime-500'
+                : selectedPreset === 'Home'
+                  ? 'bg-amber-400'
+                  : selectedPreset === 'Disarmed'
+                    ? 'bg-red-600'
+                    : 'bg-transparent'
           }`}>
           <View className="mt-5 flex-1 flex-col justify-evenly">
             <View className="flex flex-row justify-between">
               <View>
                 <Text className="ml-2 mt-3 text-4xl font-semibold antialiased">Your home is</Text>
                 <Text className="ml-2 mt-1 text-5xl font-extrabold antialiased">
-                  {selectedPreset === 'Away'
-                    ? 'Secured'
-                    : selectedPreset === 'Home'
-                      ? 'Welcoming'
-                      : selectedPreset === 'Disarmed'
-                        ? 'Unsecured'
-                        : 'bg-transparent'}
+                  {isItACustomPreset
+                    ? 'Unknown'
+                    : selectedPreset === 'Away'
+                      ? 'Secured'
+                      : selectedPreset === 'Home'
+                        ? 'Welcoming'
+                        : selectedPreset === 'Disarmed'
+                          ? 'Unsecured'
+                          : 'bg-transparent'}
                 </Text>
               </View>
               <Pressable
                 onPress={toggleColorScheme}
                 className={`mr-8 mt-3 flex flex-row items-center self-center rounded-full px-3 py-1 ${
-                  selectedPreset === 'Away'
-                    ? 'bg-lime-600'
-                    : selectedPreset === 'Home'
-                      ? 'bg-amber-500'
-                      : selectedPreset === 'Disarmed'
-                        ? 'bg-red-700'
-                        : 'bg-transparent'
+                  isItACustomPreset
+                    ? 'bg-stone-600'
+                    : selectedPreset === 'Away'
+                      ? 'bg-lime-600'
+                      : selectedPreset === 'Home'
+                        ? 'bg-amber-500'
+                        : selectedPreset === 'Disarmed'
+                          ? 'bg-red-700'
+                          : 'bg-transparent'
                 }`}>
                 <Text className="text-sm font-extrabold text-zinc-300 antialiased">switch to </Text>
                 <Text className="text-3xl">{`${colorScheme === 'dark' ? '🌞' : '🌙'}`}</Text>
               </Pressable>
             </View>
             <View
+              className={`mx-3 mr-7 flex flex-row items-center justify-center self-center rounded-lg p-1 px-2 ${isItACustomPreset === true ? 'flex' : 'hidden'}`}>
+              <Ionicons name="warning" size={22} color="orange" />
+              <Text className="ml-1 text-lg font-medium text-amber-500 antialiased">
+                Be careful you are on a custom preset
+              </Text>
+            </View>
+            <View
               className={`mx-3 mb-14 mr-7 flex h-14 flex-row items-center justify-evenly rounded-lg p-1 px-2  ${
-                selectedPreset === 'Away'
-                  ? 'bg-lime-600'
-                  : selectedPreset === 'Home'
-                    ? 'bg-amber-500'
-                    : selectedPreset === 'Disarmed'
-                      ? 'bg-red-700'
-                      : 'bg-transparent'
+                isItACustomPreset
+                  ? 'bg-stone-400'
+                  : selectedPreset === 'Away'
+                    ? 'bg-lime-600'
+                    : selectedPreset === 'Home'
+                      ? 'bg-amber-500'
+                      : selectedPreset === 'Disarmed'
+                        ? 'bg-red-700'
+                        : 'bg-transparent'
               }`}>
               <Pressable
                 android_ripple={{ color: '#d97706', radius: 58 }}
                 className={`mr-2 h-full w-1/3 flex-row items-center justify-center rounded-md ${
-                  selectedPreset === 'Away'
-                    ? 'bg-orange-500'
-                    : selectedPreset === 'Home'
-                      ? 'bg-transparent'
-                      : selectedPreset === 'Disarmed'
+                  isItACustomPreset
+                    ? 'bg-transparent'
+                    : selectedPreset === 'Away'
+                      ? 'bg-orange-500'
+                      : selectedPreset === 'Home'
                         ? 'bg-transparent'
-                        : 'bg-transparent'
+                        : selectedPreset === 'Disarmed'
+                          ? 'bg-transparent'
+                          : 'bg-transparent'
                 }`}
                 onPress={() => {
                   setSelectedPreset('Away');
@@ -353,24 +422,28 @@ export default function Home() {
                   name="lock-outline"
                   size={20}
                   color={`${
-                    selectedPreset === 'Away'
-                      ? 'white'
-                      : selectedPreset === 'Home'
-                        ? 'black'
-                        : selectedPreset === 'Disarmed'
+                    isItACustomPreset
+                      ? 'black'
+                      : selectedPreset === 'Away'
+                        ? 'white'
+                        : selectedPreset === 'Home'
                           ? 'black'
-                          : 'black'
+                          : selectedPreset === 'Disarmed'
+                            ? 'black'
+                            : 'black'
                   }`}
                 />
                 <Text
                   className={`ml-1 ${
-                    selectedPreset === 'Away'
-                      ? 'text-xl font-bold text-white'
-                      : selectedPreset === 'Home'
-                        ? 'text-xl font-semibold'
-                        : selectedPreset === 'Disarmed'
+                    isItACustomPreset
+                      ? 'text-xl font-semibold'
+                      : selectedPreset === 'Away'
+                        ? 'text-xl font-bold text-white'
+                        : selectedPreset === 'Home'
                           ? 'text-xl font-semibold'
-                          : 'bg-transparent'
+                          : selectedPreset === 'Disarmed'
+                            ? 'text-xl font-semibold'
+                            : 'bg-transparent'
                   }`}>
                   Away
                 </Text>
@@ -378,13 +451,15 @@ export default function Home() {
               <Pressable
                 android_ripple={{ color: '#451a03', radius: 58 }}
                 className={`mr-2 h-full w-1/3 flex-row items-center justify-center rounded-md ${
-                  selectedPreset === 'Away'
+                  isItACustomPreset
                     ? 'bg-transparent'
-                    : selectedPreset === 'Home'
-                      ? 'bg-orange-900'
-                      : selectedPreset === 'Disarmed'
-                        ? 'bg-transparent'
-                        : 'bg-transparent'
+                    : selectedPreset === 'Away'
+                      ? 'bg-transparent'
+                      : selectedPreset === 'Home'
+                        ? 'bg-orange-900'
+                        : selectedPreset === 'Disarmed'
+                          ? 'bg-transparent'
+                          : 'bg-transparent'
                 }`}
                 onPress={() => {
                   setSelectedPreset('Home');
@@ -395,24 +470,28 @@ export default function Home() {
                   name="home-lock"
                   size={20}
                   color={`${
-                    selectedPreset === 'Away'
+                    isItACustomPreset
                       ? 'black'
-                      : selectedPreset === 'Home'
-                        ? 'white'
-                        : selectedPreset === 'Disarmed'
-                          ? 'black'
-                          : 'black'
+                      : selectedPreset === 'Away'
+                        ? 'black'
+                        : selectedPreset === 'Home'
+                          ? 'white'
+                          : selectedPreset === 'Disarmed'
+                            ? 'black'
+                            : 'black'
                   }`}
                 />
                 <Text
                   className={`ml-1 ${
-                    selectedPreset === 'Away'
+                    isItACustomPreset
                       ? 'text-xl font-semibold'
-                      : selectedPreset === 'Home'
-                        ? 'text-xl font-bold text-white'
-                        : selectedPreset === 'Disarmed'
-                          ? 'text-xl font-semibold'
-                          : 'bg-transparent'
+                      : selectedPreset === 'Away'
+                        ? 'text-xl font-semibold'
+                        : selectedPreset === 'Home'
+                          ? 'text-xl font-bold text-white'
+                          : selectedPreset === 'Disarmed'
+                            ? 'text-xl font-semibold'
+                            : 'bg-transparent'
                   }`}>
                   Home
                 </Text>
@@ -420,13 +499,15 @@ export default function Home() {
               <Pressable
                 android_ripple={{ color: '#09090b', radius: 58 }}
                 className={`h-full w-1/3 flex-row items-center justify-center rounded-md ${
-                  selectedPreset === 'Away'
+                  isItACustomPreset
                     ? 'bg-transparent'
-                    : selectedPreset === 'Home'
+                    : selectedPreset === 'Away'
                       ? 'bg-transparent'
-                      : selectedPreset === 'Disarmed'
-                        ? 'bg-zinc-900'
-                        : 'bg-transparent'
+                      : selectedPreset === 'Home'
+                        ? 'bg-transparent'
+                        : selectedPreset === 'Disarmed'
+                          ? 'bg-zinc-900'
+                          : 'bg-transparent'
                 }`}
                 onPress={() => {
                   setSelectedPreset('Disarmed');
@@ -437,24 +518,28 @@ export default function Home() {
                   name="lock-open-variant-outline"
                   size={20}
                   color={`${
-                    selectedPreset === 'Away'
+                    isItACustomPreset
                       ? 'black'
-                      : selectedPreset === 'Home'
+                      : selectedPreset === 'Away'
                         ? 'black'
-                        : selectedPreset === 'Disarmed'
-                          ? 'white'
-                          : 'black'
+                        : selectedPreset === 'Home'
+                          ? 'black'
+                          : selectedPreset === 'Disarmed'
+                            ? 'white'
+                            : 'black'
                   }`}
                 />
                 <Text
                   className={`ml-1 ${
-                    selectedPreset === 'Away'
+                    isItACustomPreset
                       ? 'text-xl font-semibold'
-                      : selectedPreset === 'Home'
-                        ? 'text-xl font-semibold '
-                        : selectedPreset === 'Disarmed'
-                          ? 'text-xl font-bold text-white'
-                          : 'bg-transparent'
+                      : selectedPreset === 'Away'
+                        ? 'text-xl font-semibold'
+                        : selectedPreset === 'Home'
+                          ? 'text-xl font-semibold '
+                          : selectedPreset === 'Disarmed'
+                            ? 'text-xl font-bold text-white'
+                            : 'bg-transparent'
                   }`}>
                   Disarmed
                 </Text>
