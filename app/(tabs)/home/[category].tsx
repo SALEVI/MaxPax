@@ -6,6 +6,7 @@ import { View, Text, Switch, ActivityIndicator, Pressable, SafeAreaView } from '
 import { useInsertNotification } from '~/api/notifications';
 import { useSensorList, useUpdateSensor } from '~/api/sensors';
 import { useUpdateSensorListener } from '~/api/sensors/subscriptions';
+import { usePushNotifications } from '~/providers/NotificationProvider';
 import { notifyUser } from '~/utils/notifications';
 
 const DeviceDetailsScreen = () => {
@@ -16,6 +17,7 @@ const DeviceDetailsScreen = () => {
   const { data: sensor, error, isLoading } = useSensorList();
   const { mutate: updateSensor } = useUpdateSensor();
   const { mutate: insertNotification } = useInsertNotification();
+  const { isEnabled } = usePushNotifications();
 
   const router = useRouter();
 
@@ -38,7 +40,7 @@ const DeviceDetailsScreen = () => {
       sensor.forEach((s) => {
         if (s.value > 3000) {
           // Send notification when value exceeds 4000
-          notifyUser(s.name, s.value);
+          isEnabled && notifyUser(s.name, s.value);
         }
       });
     }

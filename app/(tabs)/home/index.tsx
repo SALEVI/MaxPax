@@ -11,6 +11,7 @@ import { useSensorList, useUpdateSensor } from '~/api/sensors';
 import { useUpdateSensorListener } from '~/api/sensors/subscriptions';
 import CategoryListItem from '~/components/CategoryListItem';
 import SidescrollingText from '~/components/SidescrollingText';
+import { usePushNotifications } from '~/providers/NotificationProvider';
 import { useSensor } from '~/providers/SensorProvider';
 import { notifyUser } from '~/utils/notifications';
 
@@ -47,6 +48,7 @@ export default function Home() {
   const { mutate: updateSensor } = useUpdateSensor();
   const { mutate: insertNotification } = useInsertNotification();
   const { colorScheme, toggleColorScheme } = useSensor();
+  const { isEnabled } = usePushNotifications();
   const [statusMap, setStatusMap] = useState<{ [key: number]: string }>({});
 
   const saveVariable = async (key, value) => {
@@ -94,7 +96,7 @@ export default function Home() {
           const body = `has turned ${s.status}`;
           // Send notification when status changes
 
-          notifyUser(title, body);
+          isEnabled && notifyUser(title, body);
           insertNotification({
             title,
             body,

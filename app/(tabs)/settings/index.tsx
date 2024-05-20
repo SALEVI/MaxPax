@@ -1,24 +1,19 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import {
-  View,
-  Text,
-  Pressable,
-  ScrollView,
-  ActivityIndicator,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
 
 import SettingsListItem from '../../../components/SettingsListItem';
 
 import { usePresetAwayList, usePresetDisarmedList, usePresetHomeList } from '~/api/presets';
 import SettingsPreset from '~/components/SettingsPreset';
+import { usePushNotifications } from '~/providers/NotificationProvider';
 import { useSensor } from '~/providers/SensorProvider';
 import { supabase } from '~/utils/supabase';
 
 export default function Home() {
   const router = useRouter();
+  const { isEnabled, handleToggleNotifications } = usePushNotifications();
   const { colorScheme } = useSensor();
 
   const {
@@ -87,6 +82,8 @@ export default function Home() {
             settingsName={settingsName}
             iconName="notifications-off-outline"
             colorScheme={colorScheme}
+            isEnabled={isEnabled}
+            handleToggleNotifications={handleToggleNotifications}
           />
 
           <Text className=" pb-3 text-2xl font-bold antialiased dark:text-zinc-100">Presets</Text>

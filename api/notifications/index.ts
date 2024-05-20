@@ -10,7 +10,8 @@ export const useNotificationList = () => {
       const { data, error } = await supabase
         .from('notifications')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(25);
       if (error) {
         throw new Error(error.message);
       }
