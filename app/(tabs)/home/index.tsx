@@ -351,41 +351,52 @@ export default function Home() {
             </View>
           </View>
         </View>
-        <View
-          className="bottom-12 flex-1 bg-zinc-100 py-2 dark:bg-black"
-          style={{ borderRadius: 30 }}>
-          <View className="flex-row items-center pl-5 pt-3 ">
-            <MaterialIcons
-              name="sensors"
-              size={36}
-              color={colorScheme === 'dark' ? 'white' : 'black'}
-            />
-            <Text className="pl-2 text-3xl font-bold dark:text-zinc-50">Sensors</Text>
-          </View>
-
-          {/* Add a text to say this is latest notification */}
-          {/* <Text className="ml-5 mt-10 dark:text-white">Latest Notification</Text> */}
-          <View className="mx-5 mt-10 h-11 flex-row items-center rounded-lg bg-zinc-900">
-            <SidescrollingText
-              title={latestNotification?.title}
-              body={latestNotification?.body}
-              created_at={latestNotification?.created_at}
-            />
-          </View>
-          <FlatList
-            contentContainerClassName="flex flex-row flex-wrap justify-around gap-4 p-5 mt-10"
-            data={uniqueCategories}
-            renderItem={({ item }) => (
-              <CategoryListItem
-                sensor={item}
-                statusMap={statusMap}
-                toggleAllSensorsInCategory={toggleAllSensorsInCategory}
-                colorScheme={colorScheme}
+        <View className="flex-1 flex-col justify-between">
+          <View
+            className="bottom-12 flex-1 bg-zinc-100 py-2 dark:bg-black"
+            style={{ borderRadius: 30 }}>
+            <View className="flex-row items-center pl-5 pt-3 ">
+              <MaterialIcons
+                name="sensors"
+                size={36}
+                color={colorScheme === 'dark' ? 'white' : 'black'}
               />
-            )}
-            numColumns={2}
-            columnWrapperClassName="gap-4"
-          />
+              <Text className="pl-2 text-3xl font-bold dark:text-zinc-50">Sensors</Text>
+            </View>
+            <View className="flex h-full flex-col px-5">
+              <View className="flex-grow" />
+              {/* Notification container */}
+              {/* Maybe add a text to say that this is the last notification*/}
+              <View className="h-11 flex-row items-center rounded-lg bg-zinc-900">
+                <SidescrollingText
+                  title={latestNotification?.title}
+                  body={latestNotification?.body}
+                  created_at={latestNotification?.created_at}
+                />
+              </View>
+
+              {/* Spacer to fill available space */}
+              <View className="flex-grow" />
+
+              {/* FlatList container */}
+              <View className="flex-grow">
+                <FlatList
+                  contentContainerClassName="flex flex-row flex-wrap justify-around gap-4 p-5"
+                  data={uniqueCategories}
+                  renderItem={({ item }) => (
+                    <CategoryListItem
+                      sensor={item}
+                      statusMap={statusMap}
+                      toggleAllSensorsInCategory={toggleAllSensorsInCategory}
+                      colorScheme={colorScheme}
+                    />
+                  )}
+                  numColumns={2}
+                  columnWrapperClassName="gap-4"
+                />
+              </View>
+            </View>
+          </View>
         </View>
       </View>
     </>

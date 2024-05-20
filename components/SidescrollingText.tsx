@@ -21,7 +21,7 @@ const SidescrollingText = ({ title, body, created_at }) => {
       }}
       horizontal
       showsHorizontalScrollIndicator={false}>
-      <Ionicons name="chevron-forward" size={20} color="white" className="ml-2" />
+      <Ionicons name="chevron-forward" size={20} color="white" className="ml-2 mr-2" />
       <MaterialIcons name="notifications-on" size={20} color="white" />
       <TouchableOpacity onPress={handlePress}>
         <Text className="ml-2 self-center text-lg font-semibold text-white">
