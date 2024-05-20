@@ -3,7 +3,7 @@
     "name": "MaxPax",
     "slug": "MaxPax",
     "version": "1.0.0",
-    "scheme": "MaxPax",
+    "scheme": ["maxpax"],
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -11,7 +11,20 @@
     },
     "plugins": [
       "expo-router",
-      "expo-secure-store"
+      "expo-secure-store",
+        [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 34,
+            "targetSdkVersion": 34,
+            "buildToolsVersion": "34.0.0"
+          },
+          "ios": {
+            "deploymentTarget": "14.0"
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
@@ -35,7 +48,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.salevi.MaxPax"
     },
     "extra": {
       "router": {
@@ -44,6 +58,12 @@
       "eas": {
         "projectId": "0a2bde37-b16e-46e4-8fe0-3a3d03e6664f"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/0a2bde37-b16e-46e4-8fe0-3a3d03e6664f"
     }
   }
 }
