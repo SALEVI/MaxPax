@@ -49,13 +49,13 @@ const NotificationListItem = ({ notification }: NotificationListItemProps) => {
         </View>
         {notification.value && (
           <View className="h-8 w-auto items-center justify-center rounded-lg border border-zinc-800 px-3">
-            <Text className="text-sm font-medium text-orange-400 antialiased">
+            <Text className="text-sm font-medium text-orange-400 antialiased dark:text-orange-400">
               Read value : {notification.value}
             </Text>
           </View>
         )}
       </View>
-    </View> 
+    </View>
   );
 };
 

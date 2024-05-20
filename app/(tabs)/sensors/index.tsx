@@ -1,12 +1,16 @@
+import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { View, Text, useColorScheme, ActivityIndicator, ScrollView } from 'react-native';
+import { View, Text, ActivityIndicator, ScrollView } from 'react-native';
 
 import { useSensorList, useUpdateSensor } from '~/api/sensors';
 import SensorsListItem from '~/components/SensorsListItem';
+import { useSensor } from '~/providers/SensorProvider';
 
 const SensorsScreen = () => {
   const [isEnabled, setIsEnabled] = useState(false);
-  const isDarkMode = useColorScheme() === 'dark';
+  const { colorScheme } = useSensor();
+
+  console.log(colorScheme);
 
   const { data: sensors, error, isLoading } = useSensorList();
   const { mutate: updateSensor } = useUpdateSensor();
@@ -66,6 +70,7 @@ const SensorsScreen = () => {
     <ScrollView
       className="flex-1 dark:bg-black"
       contentContainerStyle={{ marginTop: 'auto', marginBottom: 'auto' }}>
+      <StatusBar style={`${colorScheme === 'dark' ? 'light' : 'dark'}`} />
       <View className="mx-5 rounded-lg border-zinc-800 bg-zinc-300 dark:bg-zinc-900">
         {Object.keys(groupedSensors).map((category) => (
           <View key={category} className="mt-3 flex">
@@ -83,7 +88,7 @@ const SensorsScreen = () => {
                   status={sensor.status}
                   toggleSwitch={toggleSwitch}
                   iconName="flashlight"
-                  colorScheme={isDarkMode ? 'light' : 'dark'}
+                  colorScheme={colorScheme}
                   settingsName={sensor.name[0].toUpperCase() + sensor.name.slice(1)}
                 />
               </View>

@@ -1,11 +1,14 @@
+import { StatusBar } from 'expo-status-bar';
 import { View, Text, ActivityIndicator, FlatList } from 'react-native';
 
 import { useNotificationList } from '~/api/notifications';
 import { useInsertNotificationListener } from '~/api/notifications/subscriptions';
 import NotificationListItem from '~/components/NotificationListItem';
+import { useSensor } from '~/providers/SensorProvider';
 
 export default function NotificationsScreen() {
   const { data: notifications, error, isLoading } = useNotificationList();
+  const { colorScheme } = useSensor();
 
   useInsertNotificationListener();
 
@@ -24,6 +27,7 @@ export default function NotificationsScreen() {
   return (
     <>
       <View className="flex-1 dark:bg-black">
+        <StatusBar style={`${colorScheme === 'dark' ? 'light' : 'dark'}`} />
         <FlatList
           className="mt-3"
           data={notifications}

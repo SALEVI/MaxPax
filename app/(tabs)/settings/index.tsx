@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import {
   View,
   Text,
@@ -18,7 +19,7 @@ import { supabase } from '~/utils/supabase';
 
 export default function Home() {
   const router = useRouter();
-  const { colorScheme, toggleColorScheme } = useSensor();
+  const { colorScheme } = useSensor();
 
   const {
     // refetch: refetchPresetAway,
@@ -76,6 +77,8 @@ export default function Home() {
   return (
     <>
       <ScrollView className="flex-1 px-7 dark:bg-black">
+        <StatusBar style={`${colorScheme === 'dark' ? 'light' : 'dark'}`} />
+
         <View className="">
           <Text className=" pb-3 pt-5 text-2xl font-bold antialiased dark:text-zinc-100">
             Preference

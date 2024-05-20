@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { View, Text, Switch, ActivityIndicator, Pressable } from 'react-native';
+import { View, Text, Switch, ActivityIndicator, Pressable, SafeAreaView } from 'react-native';
 
 import { useInsertNotification } from '~/api/notifications';
 import { useSensorList, useUpdateSensor } from '~/api/sensors';
@@ -108,14 +108,14 @@ const DeviceDetailsScreen = () => {
   };
 
   return (
-    <View className="flex-1 pt-14 dark:bg-black">
+    <SafeAreaView className="flex-1 pt-11 dark:bg-black">
       <View className="ml-5">
         <Pressable className=" flex flex-row items-center" onPress={() => router.back()}>
           <Ionicons name="chevron-back" size={24} color="grey" />
           <Text className="ml-2 text-2xl font-semibold dark:text-white">{categoryCapitalized}</Text>
         </Pressable>
       </View>
-      <View className="mt-4 border-b border-zinc-800" />
+      <View className="mt-4 border-b border-zinc-400" />
       <View className="">
         <View className="mx-5 mt-5 rounded-lg border border-zinc-800">
           {sensor
@@ -143,7 +143,7 @@ const DeviceDetailsScreen = () => {
             ))}
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
