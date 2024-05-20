@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { View, FlatList, Text, ActivityIndicator, Pressable } from 'react-native';
 
 import { useInsertNotification, useNotificationLatest } from '~/api/notifications';
+import { usePresetAwayList, usePresetDisarmedList, usePresetHomeList } from '~/api/presets';
 import { useSensorList, useUpdateSensor } from '~/api/sensors';
 import { useUpdateSensorListener } from '~/api/sensors/subscriptions';
 import CategoryListItem from '~/components/CategoryListItem';
@@ -23,15 +24,31 @@ remapProps(FlatList, {
 export default function Home() {
   const { data: sensors, error, isLoading } = useSensorList();
   const {
+    data: presetAwayData,
+    error: presetAwayError,
+    isLoading: presetAwayIsLoading,
+  } = usePresetAwayList();
+  const {
+    data: presetHomeData,
+    error: presetHomeError,
+    isLoading: presetHomeIsLoading,
+  } = usePresetHomeList();
+  const {
+    data: presetDisarmedData,
+    error: presetDisarmedError,
+    isLoading: presetDisarmedIsLoading,
+  } = usePresetDisarmedList();
+  const {
     data: latestNotification,
     error: latestNotificationError,
     isLoading: latestNotificationIsLoading,
   } = useNotificationLatest();
+
   const { mutate: updateSensor } = useUpdateSensor();
   const { mutate: insertNotification } = useInsertNotification();
   const { colorScheme, toggleColorScheme } = useSensor();
-
   const [statusMap, setStatusMap] = useState<{ [key: number]: string }>({});
+
   const saveVariable = async (key, value) => {
     try {
       await AsyncStorage.setItem(key, JSON.stringify(value));
@@ -171,6 +188,95 @@ export default function Home() {
     setStatusMap(updatedStatusMap);
   };
 
+  const handlePresetSwitch = (presetName: string) => {
+    if (presetName === 'Away') {
+      if (presetAwayIsLoading) {
+        return (
+          <View className="flex-1 items-center justify-center dark:bg-black">
+            <ActivityIndicator size="large" color="#84cc16" />
+          </View>
+        );
+      }
+
+      if (presetAwayError) {
+        return <Text>Failed to load presetAway data</Text>;
+      }
+
+      presetAwayData?.forEach((sensor) => {
+        const { id, status } = sensor;
+        updateSensor(
+          { id, status },
+          {
+            onSuccess: () => {
+              console.log('Success sensors updated based on the "Away" preset');
+            },
+            onError: () => {
+              console.log('Failed to update the sensors with the preset "Away"');
+            },
+          }
+        );
+      });
+    }
+
+    if (presetName === 'Home') {
+      if (presetHomeIsLoading) {
+        return (
+          <View className="flex-1 items-center justify-center dark:bg-black">
+            <ActivityIndicator size="large" color="#84cc16" />
+          </View>
+        );
+      }
+
+      if (presetHomeError) {
+        return <Text>Failed to load presetHome data</Text>;
+      }
+
+      presetHomeData?.forEach((sensor) => {
+        const { id, status } = sensor;
+        updateSensor(
+          { id, status },
+          {
+            onSuccess: () => {
+              console.log('Success sensors updated based on the "Home" preset');
+            },
+            onError: () => {
+              console.log('Failed to update the sensors with the preset "Home"');
+            },
+          }
+        );
+      });
+    }
+
+    if (presetName === 'Disarmed') {
+      if (presetDisarmedIsLoading) {
+        return (
+          <View className="flex-1 items-center justify-center dark:bg-black">
+            <ActivityIndicator size="large" color="#84cc16" />
+          </View>
+        );
+      }
+
+      if (presetDisarmedError) {
+        return <Text>Failed to load presetDisarmed data</Text>;
+      }
+
+      presetDisarmedData?.forEach((sensor) => {
+        const { id, status } = sensor;
+        updateSensor(
+          { id, status },
+          {
+            onSuccess: () => {
+              console.log('Success sensors updated based on the "Disarmed" preset');
+            },
+            onError: () => {
+              console.log('Failed to update the sensors with the preset "Disarmed"');
+            },
+          }
+        );
+      });
+    }
+  };
+
   return (
     <>
       <Stack.Screen options={{ title: 'Home' }} />
@@ -239,6 +345,7 @@ export default function Home() {
                 onPress={() => {
                   setSelectedPreset('Away');
                   saveVariable('lastSelectedPreset', 'Away');
+                  handlePresetSwitch('Away');
                 }}>
                 <MaterialCommunityIcons
                   name="lock-outline"
@@ -280,6 +387,7 @@ export default function Home() {
                 onPress={() => {
                   setSelectedPreset('Home');
                   saveVariable('lastSelectedPreset', 'Home');
+                  handlePresetSwitch('Home');
                 }}>
                 <MaterialCommunityIcons
                   name="home-lock"
@@ -321,6 +429,7 @@ export default function Home() {
                 onPress={() => {
                   setSelectedPreset('Disarmed');
                   saveVariable('lastSelectedPreset', 'Disarmed');
+                  handlePresetSwitch('Disarmed');
                 }}>
                 <MaterialCommunityIcons
                   name="lock-open-variant-outline"

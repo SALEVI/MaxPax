@@ -44,7 +44,7 @@ const SensorsScreen = () => {
       { id, status: newStatus },
       {
         onSuccess: () => {
-          console.log('success');
+          console.log('success sensor updated');
         },
         onError: () => {
           // Revert the status if the update fails
