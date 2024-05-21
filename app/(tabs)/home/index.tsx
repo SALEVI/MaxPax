@@ -148,7 +148,7 @@ export default function Home() {
           const body = `has turned ${s.status}`;
           // Send notification when status changes
 
-          isEnabled && notifyUser(title, body);
+          // isEnabled && notifyUser(title, body);
           insertNotification({
             title,
             body,

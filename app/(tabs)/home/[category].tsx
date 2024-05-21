@@ -40,7 +40,7 @@ const DeviceDetailsScreen = () => {
       sensor.forEach((s) => {
         if (s.value > 3000) {
           // Send notification when value exceeds 4000
-          isEnabled && notifyUser(s.name, s.value);
+          // isEnabled && notifyUser(s.name, s.value);
         }
       });
     }

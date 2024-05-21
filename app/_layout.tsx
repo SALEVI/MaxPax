@@ -1,6 +1,8 @@
 import '../global.css';
+import { initializeApp } from '@react-native-firebase/app';
 import { Stack } from 'expo-router';
 
+import NotificationFCMV1 from '~/components/NotificationsFCMV1';
 import AuthProvider from '~/providers/AuthProvider';
 import NotificationProvider from '~/providers/NotificationProvider';
 import QueryProvider from '~/providers/QueryProvider';
@@ -17,6 +19,7 @@ export default function RootLayout() {
       <QueryProvider>
         <NotificationProvider>
           <SensorProvider>
+            <NotificationFCMV1 />
             <Stack initialRouteName="(tabs)">
               <Stack.Screen name="index" options={{ headerShown: false }} />
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
