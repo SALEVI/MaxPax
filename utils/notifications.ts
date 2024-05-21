@@ -75,6 +75,7 @@ export async function sendPushNotification(expoPushToken: string, title: string,
 
 export const notifyUser = async (title: string, body: string) => {
   const token = 'ExponentPushToken[DN5ciOHPJ0Pmb6VKtXKAab]';
+  console.log('Push Notifications sent');
   console.log(title, body);
   sendPushNotification(token, title, body);
 };

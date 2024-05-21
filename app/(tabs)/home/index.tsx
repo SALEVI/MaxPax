@@ -12,6 +12,7 @@ import { useUpdateSensorListener } from '~/api/sensors/subscriptions';
 import CategoryListItem from '~/components/CategoryListItem';
 import SidescrollingText from '~/components/SidescrollingText';
 import { usePushNotifications } from '~/providers/NotificationProvider';
+import { useNotificationFCMV1 } from '~/providers/NotificationsFCMV1Provider';
 import { useSensor } from '~/providers/SensorProvider';
 import { notifyUser } from '~/utils/notifications';
 
@@ -49,6 +50,7 @@ export default function Home() {
   const { mutate: insertNotification } = useInsertNotification();
   const { colorScheme, toggleColorScheme } = useSensor();
   const { isEnabled } = usePushNotifications();
+  // const { messaging } = useNotificationFCMV1();
   const [statusMap, setStatusMap] = useState<{ [key: number]: string }>({});
 
   const saveVariable = async (key, value) => {
@@ -148,7 +150,16 @@ export default function Home() {
           const body = `has turned ${s.status}`;
           // Send notification when status changes
 
+          console.log('Push notifications are ', isEnabled);
+
           // isEnabled && notifyUser(title, body);
+          // isEnabled &&
+          //   messaging.sendMessage({
+          //     data: {
+          //       title,
+          //       body,
+          //     },
+          //   });
           insertNotification({
             title,
             body,

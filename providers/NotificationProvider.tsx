@@ -4,6 +4,8 @@ import * as Notifications from 'expo-notifications';
 import { PropsWithChildren, createContext, useContext, useEffect, useRef, useState } from 'react';
 import { registerForPushNotificationsAsync } from 'utils/notifications';
 
+import { useInsertNotificationListener } from '~/api/notifications/subscriptions';
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -22,6 +24,8 @@ const NotificationProvider = ({ children }: PropsWithChildren) => {
   const [isEnabled, setIsEnabled] = useState(false); // Initialize isEnabled as false
   const notificationListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
+
+  useInsertNotificationListener();
 
   useEffect(() => {
     const checkNotificationStatus = async () => {

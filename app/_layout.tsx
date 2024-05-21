@@ -5,6 +5,7 @@ import { Stack } from 'expo-router';
 import NotificationFCMV1 from '~/components/NotificationsFCMV1';
 import AuthProvider from '~/providers/AuthProvider';
 import NotificationProvider from '~/providers/NotificationProvider';
+import NotificationFCMV1Provider from '~/providers/NotificationsFCMV1Provider';
 import QueryProvider from '~/providers/QueryProvider';
 import SensorProvider from '~/providers/SensorProvider';
 
@@ -18,8 +19,9 @@ export default function RootLayout() {
     <AuthProvider>
       <QueryProvider>
         <NotificationProvider>
+          {/* <NotificationFCMV1Provider> */}
           <SensorProvider>
-            <NotificationFCMV1 />
+            {/* <NotificationFCMV1 /> */}
             <Stack initialRouteName="(tabs)">
               <Stack.Screen name="index" options={{ headerShown: false }} />
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -27,6 +29,7 @@ export default function RootLayout() {
               <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
             </Stack>
           </SensorProvider>
+          {/* </NotificationFCMV1Provider> */}
         </NotificationProvider>
       </QueryProvider>
     </AuthProvider>

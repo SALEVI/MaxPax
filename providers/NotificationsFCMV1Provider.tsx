@@ -1,8 +1,10 @@
 import messaging from '@react-native-firebase/messaging';
-import React, { useEffect } from 'react';
-import { View, Alert } from 'react-native';
+import React, { useEffect, createContext, useContext } from 'react';
+import { Alert } from 'react-native';
 
-export default function NotificationFCMV1() {
+const NotificationFCMV1Context = createContext({});
+
+const NotificationFCMV1Provider = ({ children }) => {
   const requestUserPermission = async () => {
     const authStatus = await messaging().requestPermission();
     const enabled =
@@ -58,5 +60,13 @@ export default function NotificationFCMV1() {
     return unsubscribe;
   }, []);
 
-  return <View className="hidden" />;
-}
+  return (
+    <NotificationFCMV1Context.Provider value={{ messaging }}>
+      {children}
+    </NotificationFCMV1Context.Provider>
+  );
+};
+
+export default NotificationFCMV1Provider;
+
+export const useNotificationFCMV1 = () => useContext(NotificationFCMV1Context);
