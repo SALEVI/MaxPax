@@ -34,7 +34,7 @@ const supabase = createClient(
 
 Deno.serve(async (req) => {
   const payload: WebhookPayload = await req.json();
-  const expoPushToken = 'ExponentPushToken[jD8fK-POseZW5sBmLVltiF]';
+  const expoPushToken = 'ExponentPushToken[sqqkbyAGnErw8bSa-axb2i]';
   const { data } = await supabase
     .from('profiles')
     .select('expo_push_token')

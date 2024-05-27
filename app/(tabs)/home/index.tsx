@@ -2,7 +2,7 @@ import { MaterialIcons, MaterialCommunityIcons, Ionicons } from '@expo/vector-ic
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Stack } from 'expo-router';
 import { remapProps } from 'nativewind';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { View, FlatList, Text, ActivityIndicator, Pressable } from 'react-native';
 
 import { useInsertNotification, useNotificationLatest } from '~/api/notifications';
@@ -52,6 +52,7 @@ export default function Home() {
   const { isEnabled } = usePushNotifications();
   // const { messaging } = useNotificationFCMV1();
   const [statusMap, setStatusMap] = useState<{ [key: number]: string }>({});
+  const lastMotionNotificationTime = useRef(Date.now());
 
   const saveVariable = async (key, value) => {
     try {
@@ -143,10 +144,10 @@ export default function Home() {
       sensors.forEach((s) => {
         const previousStatus = statusMap[s.id];
         const currentStatus = s.status;
+        const title = `${s.name.charAt(0).toUpperCase()}${s.name.slice(1)} sensor`;
 
         // Check if status has changed
         if (previousStatus && previousStatus !== currentStatus) {
-          const title = `${s.name.charAt(0).toUpperCase()}${s.name.slice(1)} sensor`;
           const body = `has turned ${s.status}`;
           // Send notification when status changes
 
@@ -167,6 +168,23 @@ export default function Home() {
             status: s.status,
             value: s.value,
           });
+        }
+
+        if (s.name === 'motion') {
+          const body = 'has detected movement!';
+          const currentTime = Date.now();
+
+          // 30ish sec delay for motion detections
+          if (s.value !== 0 && currentTime - lastMotionNotificationTime.current >= 25000) {
+            insertNotification({
+              title,
+              body,
+              name: s.name,
+              status: s.status,
+              value: s.value,
+            });
+            lastMotionNotificationTime.current = currentTime;
+          }
         }
 
         // Update status map
@@ -381,11 +399,11 @@ export default function Home() {
                   isItACustomPreset
                     ? 'bg-stone-600'
                     : selectedPreset === 'Away'
-                      ? 'bg-lime-600'
+                      ? 'bg-lime-800'
                       : selectedPreset === 'Home'
-                        ? 'bg-amber-500'
+                        ? 'bg-amber-700'
                         : selectedPreset === 'Disarmed'
-                          ? 'bg-red-700'
+                          ? 'bg-red-900'
                           : 'bg-transparent'
                 }`}>
                 <Text className="text-sm font-extrabold text-zinc-300 antialiased">switch to </Text>
