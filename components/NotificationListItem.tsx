@@ -30,30 +30,20 @@ const NotificationListItem = ({ notification }: NotificationListItemProps) => {
           {dayjs(notification.created_at).format('LLLL')}
         </Text>
       </View>
-      {/* 
-      <BlurView
-        intensity={50}
-        tint="systemUltraThinMaterial"
-        style={{ overflow: 'hidden' }}
-        className="h-8 w-12 items-center justify-center rounded-md"
-      /> */}
       <View className="flex h-24 flex-col-reverse items-end justify-between py-1">
         <View
-          className={`h-8 w-auto items-center justify-center rounded-lg border  px-3 ${notification.status === 'on' ? 'border-zinc-800' : 'border-red-500'}`}>
+          className={`h-8 w-auto items-center justify-center rounded-lg border px-3 ${notification.status === 'on' ? 'border-zinc-800' : 'border-red-500'}`}>
           <Text
-            className={`text-sm font-medium antialiased ${
-              notification.status === 'on' ? 'text-lime-500' : 'text-red-500'
-            }`}>
+            className={`text-sm font-medium antialiased ${notification.status === 'on' ? 'text-lime-500' : 'text-red-500'}`}>
             {notification.status}
           </Text>
         </View>
-        {notification.value && (
-          <View className="h-8 w-auto items-center justify-center rounded-lg border border-zinc-800 px-3">
-            <Text className="text-sm font-medium text-orange-400 antialiased dark:text-orange-400">
-              Read value : {notification.value}
-            </Text>
-          </View>
-        )}
+        {/* <View className="h-8 w-auto items-center justify-center rounded-lg border border-zinc-800 px-3">
+          <Text className="text-sm font-medium text-orange-400 antialiased dark:text-orange-400">
+            Read value: {notification.value}
+          </Text>
+        </View> */}
+        <View className="w-auto" />
       </View>
     </View>
   );

@@ -25,16 +25,14 @@ export default function NotificationsScreen() {
   }
 
   return (
-    <>
-      <View className="flex-1 dark:bg-black">
-        <StatusBar style={`${colorScheme === 'dark' ? 'light' : 'dark'}`} />
-        <FlatList
-          className="mt-3"
-          data={notifications}
-          renderItem={({ item }) => <NotificationListItem notification={item} />}
-          keyExtractor={(item) => item.id.toString()}
-        />
-      </View>
-    </>
+    <View className="flex-1 dark:bg-black">
+      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+      <FlatList
+        className="mt-3"
+        data={notifications}
+        renderItem={({ item }) => <NotificationListItem notification={item} />}
+        keyExtractor={(item) => item.id.toString()}
+      />
+    </View>
   );
 }

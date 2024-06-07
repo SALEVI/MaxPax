@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { View, Text, Switch, ActivityIndicator, Pressable, SafeAreaView } from 'react-native';
@@ -119,16 +119,17 @@ const DeviceDetailsScreen = () => {
       </View>
       <View className="mt-4 border-b border-zinc-400" />
       <View className="">
-        <View className="mx-5 mt-5 rounded-lg border border-zinc-800">
+        <View className="mx-5 mt-5">
           {sensor
             ?.filter((s) => s.category === category)
             .sort((a, b) => a.id - b.id) // Sort by id to maintain order
             .map((s) => (
               <View
                 key={s.id}
-                className="flex flex-row items-center justify-between space-x-4 border-b border-zinc-800">
-                <Text className="rounded-md p-5 text-lg font-medium dark:text-white">
-                  {s.name[0].toUpperCase() + s.name.slice(1)} + id: {s.id} + value {s.value}
+                className="my-2 flex flex-row items-center justify-between space-x-4 rounded-lg bg-purple-500">
+                <MaterialCommunityIcons name="motion-sensor" size={20} color="white" />
+                <Text className="ml-2 rounded-md p-5 text-lg font-medium dark:text-white">
+                  {s.name[0].toUpperCase() + s.name.slice(1)}
                 </Text>
                 <Switch
                   trackColor={{ false: '#27272a', true: '#84cc16' }}
