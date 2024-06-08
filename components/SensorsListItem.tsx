@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import React from 'react';
 import { View, Text, Switch } from 'react-native';
 
@@ -7,7 +7,7 @@ const SensorsListItem = ({ settingsName, iconName, colorScheme, toggleSwitch, id
     <View className="mx-3 mb-3 flex h-14 flex-row justify-between rounded-lg bg-zinc-200 pl-4 dark:bg-black">
       <View className="justify-center">
         <View className="flex flex-row items-center">
-          <Ionicons
+          <MaterialCommunityIcons
             name={iconName}
             size={22}
             color={`${colorScheme === 'dark' ? 'white' : 'black'}`}

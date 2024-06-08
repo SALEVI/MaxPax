@@ -87,7 +87,7 @@ const SensorsScreen = () => {
                   id={sensor.id}
                   status={sensor.status}
                   toggleSwitch={toggleSwitch}
-                  iconName="flashlight"
+                  iconName={sensor.icon}
                   colorScheme={colorScheme}
                   settingsName={sensor.name[0].toUpperCase() + sensor.name.slice(1)}
                 />

@@ -48,7 +48,7 @@ const SettingsPreset = ({ presetName, preset, colorScheme }) => {
             <View key={sensor.id}>
               <SettingsListItemSensor
                 settingName={sensor.name[0].toUpperCase() + sensor.name.slice(1)}
-                iconName="flash-outline"
+                iconName={sensor.icon}
                 preset={sensor}
                 presetName={presetName}
                 colorScheme={colorScheme}

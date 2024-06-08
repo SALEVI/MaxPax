@@ -9,11 +9,21 @@ import { useUpdateSensorListener } from '~/api/sensors/subscriptions';
 import { usePushNotifications } from '~/providers/NotificationProvider';
 import { notifyUser } from '~/utils/notifications';
 
+const colorCategories = {
+  windows: ['#12a04e', '#e1e281', '#e89a41'], // Custom colors for 'motions' category
+  doors: ['#ea56bb', '#cfcc8e', '#68d8cb'],
+  alarms: ['#e78b73', '#c5b399', '#75a28e'], // Custom colors for 'doors' category
+  motions: ['#ecba52', '#88aa5d', '#4c9386'],
+  // Add more categories and their corresponding colors here
+};
+
 const DeviceDetailsScreen = () => {
   const { category } = useLocalSearchParams();
   const categoryCapitalized =
     (category as string)?.charAt(0)?.toUpperCase() + (category as string)?.slice(1);
   const [statusMap, setStatusMap] = useState<{ [key: number]: string }>({});
+  const [sensorColors, setSensorColors] = useState<{ [key: number]: string }>({});
+
   const { data: sensor, error, isLoading } = useSensorList();
   const { mutate: updateSensor } = useUpdateSensor();
   const { mutate: insertNotification } = useInsertNotification();
@@ -30,10 +40,30 @@ const DeviceDetailsScreen = () => {
         return map;
       }, {});
       setStatusMap(initialStatusMap);
+
+      const colorsMap = {};
+      const usedColors = {};
+
+      sensor.forEach((s) => {
+        const colors = colorCategories[s.category] || ['#a855f7']; // Fallback color if category not found
+        let color;
+
+        for (let i = 0; i < colors.length; i++) {
+          if (!usedColors[colors[i]]) {
+            color = colors[i];
+            usedColors[colors[i]] = true;
+            break;
+          }
+        }
+
+        colorsMap[s.id] = color;
+      });
+
+      setSensorColors(colorsMap);
     }
   }, [sensor]);
 
-  //Maybe move to home/index implement id based conditional logic
+  // Maybe move to home/index implement id based conditional logic
   useEffect(() => {
     // Check sensor value when it changes
     if (sensor) {
@@ -126,22 +156,31 @@ const DeviceDetailsScreen = () => {
             .map((s) => (
               <View
                 key={s.id}
-                className="my-2 flex flex-row items-center justify-between space-x-4 rounded-lg bg-purple-500">
-                <MaterialCommunityIcons name="motion-sensor" size={20} color="white" />
-                <Text className="ml-2 rounded-md p-5 text-lg font-medium dark:text-white">
-                  {s.name[0].toUpperCase() + s.name.slice(1)}
-                </Text>
-                <Switch
-                  trackColor={{ false: '#27272a', true: '#84cc16' }}
-                  thumbColor="#e4e4e7"
-                  ios_backgroundColor="#27272a"
-                  onValueChange={() => toggleSwitch(s.id)}
-                  value={statusMap[s.id] === 'on'}
-                  style={{
-                    borderRadius: 16,
-                    marginRight: 10,
-                  }}
-                />
+                style={{
+                  backgroundColor: sensorColors[s.id],
+                }}
+                className="my-2 flex h-24 flex-row items-center space-x-4 rounded-3xl p-4">
+                <View className="flex flex-1 flex-row items-center justify-between">
+                  <View className="flex flex-row items-center">
+                    <View className="ml-2 rounded-3xl bg-zinc-950 p-4">
+                      <MaterialCommunityIcons name={s.icon} size={28} color="white" />
+                    </View>
+                    <Text className="ml-6 text-lg font-semibold text-stone-950 antialiased">
+                      {s.name[0].toUpperCase() + s.name.slice(1)}
+                    </Text>
+                  </View>
+                  <Switch
+                    trackColor={{ false: 'rgba(0,0,0,0.6)', true: 'rgba(132,204,22,0.8)' }}
+                    //#e4e4e7 #84cc16
+                    thumbColor="black"
+                    ios_backgroundColor="#27272a"
+                    onValueChange={() => toggleSwitch(s.id)}
+                    value={statusMap[s.id] === 'on'}
+                    style={{
+                      borderRadius: 16,
+                    }}
+                  />
+                </View>
               </View>
             ))}
         </View>
