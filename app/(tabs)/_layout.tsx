@@ -30,10 +30,13 @@ export default function TabLayout() {
 
   return (
     <Tabs
-      screenOptions={{
+      screenOptions={({ route }) => ({
         tabBarActiveTintColor: colorScheme === 'dark' ? 'white' : 'black', // Active tint color
         tabBarInactiveTintColor: 'gray', // Inactive tint color
-      }}>
+        tabBarStyle: { display: route.name === 'index' ? 'none' : 'flex' }, // Conditionally hide tab bar
+        headerShown: route.name !== 'index', // Hide header for TabIndex screen
+        tabBarShowLabel: route.name !== 'index',
+      })}>
       <Tabs.Screen name="index" options={{ href: null }} />
       <Tabs.Screen
         name="home"

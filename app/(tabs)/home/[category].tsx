@@ -157,9 +157,15 @@ const DeviceDetailsScreen = () => {
               <View
                 key={s.id}
                 style={{
+                  marginVertical: 8,
+                  height: 96,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  borderRadius: 24,
+                  padding: 16,
                   backgroundColor: sensorColors[s.id],
-                }}
-                className="my-2 flex h-24 flex-row items-center space-x-4 rounded-3xl p-4">
+                  overflow: 'hidden',
+                }}>
                 <View className="flex flex-1 flex-row items-center justify-between">
                   <View className="flex flex-row items-center">
                     <View className="ml-2 rounded-3xl bg-zinc-950 p-4">

@@ -51,7 +51,7 @@ const CategoryListItem = ({
           source={categoryImages[sensor.category as keyof typeof categoryImages]}
           resizeMode="cover"
           imageStyle={{ borderRadius: 10 }}>
-          <View className="min-h-28 w-full min-w-48 basis-1/4 backdrop-blur-sm dark:bg-black/25">
+          <View className="min-h-28 backdrop-blur-sm dark:bg-black/25" style={{ minWidth: '47%' }}>
             <View className="ml-3 mr-2 mt-3 flex-1">
               <View>
                 <Text className="text-xl font-bold text-slate-200 dark:text-zinc-50">

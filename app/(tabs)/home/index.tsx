@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { View, FlatList, Text, ActivityIndicator, Pressable } from 'react-native';
 
 import { useInsertNotification, useNotificationLatest } from '~/api/notifications';
+import { useInsertNotificationListener } from '~/api/notifications/subscriptions';
 import { usePresetAwayList, usePresetDisarmedList, usePresetHomeList } from '~/api/presets';
 import { useSensorList, useUpdateSensor } from '~/api/sensors';
 import { useUpdateSensorListener } from '~/api/sensors/subscriptions';
@@ -53,6 +54,10 @@ export default function Home() {
   // const { messaging } = useNotificationFCMV1();
   const [statusMap, setStatusMap] = useState<{ [key: number]: string }>({});
   const lastMotionNotificationTime = useRef(Date.now());
+  const lastVibrationNotificationTime = useRef(Date.now());
+  const lastKeypadNotificationTime = useRef(Date.now());
+  const lastRFIDNotificationTime = useRef(Date.now());
+  const lastMagneticNotificationTime = useRef(Date.now());
 
   const saveVariable = async (key, value) => {
     try {
@@ -85,6 +90,7 @@ export default function Home() {
 
   //After loging in always looking for notifications
   useUpdateSensorListener();
+  useInsertNotificationListener();
 
   const [isItACustomPreset, setIsItACustomPreset] = useState(false);
 
@@ -175,7 +181,7 @@ export default function Home() {
           const currentTime = Date.now();
 
           // 30ish sec delay for motion detections
-          if (s.value !== 0 && currentTime - lastMotionNotificationTime.current >= 25000) {
+          if (s.value !== 0 && currentTime - lastMotionNotificationTime.current >= 30000) {
             insertNotification({
               title,
               body,
@@ -184,6 +190,74 @@ export default function Home() {
               value: s.value,
             });
             lastMotionNotificationTime.current = currentTime;
+          }
+        }
+
+        if (s.name === 'vibration') {
+          const body = 'has detected a hit!';
+          const currentTime = Date.now();
+
+          // 60ish sec delay for motion detections
+          if (s.value !== 0 && currentTime - lastVibrationNotificationTime.current >= 60000) {
+            insertNotification({
+              title,
+              body,
+              name: s.name,
+              status: s.status,
+              value: s.value,
+            });
+            lastVibrationNotificationTime.current = currentTime;
+          }
+        }
+
+        if (s.name === 'keypad') {
+          const body = 'has detected an entry!';
+          const currentTime = Date.now();
+
+          // 30ish sec delay for motion detections
+          if (s.value !== 0 && currentTime - lastKeypadNotificationTime.current >= 29000) {
+            insertNotification({
+              title,
+              body,
+              name: s.name,
+              status: s.status,
+              value: s.value,
+            });
+            lastKeypadNotificationTime.current = currentTime;
+          }
+        }
+
+        if (s.name === 'rfid') {
+          const body = 'has detected an entry!';
+          const currentTime = Date.now();
+
+          // 60ish sec delay for motion detections
+          if (s.value !== 0 && currentTime - lastRFIDNotificationTime.current >= 31000) {
+            insertNotification({
+              title,
+              body,
+              name: s.name,
+              status: s.status,
+              value: s.value,
+            });
+            lastRFIDNotificationTime.current = currentTime;
+          }
+        }
+
+        if (s.name === 'magnetic') {
+          const body = 'has detected an intrusion!';
+          const currentTime = Date.now();
+
+          // 60ish sec delay for motion detections
+          if (s.value !== 0 && currentTime - lastMagneticNotificationTime.current >= 65000) {
+            insertNotification({
+              title,
+              body,
+              name: s.name,
+              status: s.status,
+              value: s.value,
+            });
+            lastMagneticNotificationTime.current = currentTime;
           }
         }
 
@@ -606,7 +680,7 @@ export default function Home() {
               {/* FlatList container */}
               <View className="flex-grow">
                 <FlatList
-                  contentContainerClassName="flex flex-row flex-wrap justify-around gap-4 p-5"
+                  contentContainerClassName="flex flex-row flex-wrap justify-around gap-4"
                   data={uniqueCategories}
                   renderItem={({ item }) => (
                     <CategoryListItem

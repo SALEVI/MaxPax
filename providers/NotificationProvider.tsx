@@ -21,7 +21,7 @@ const NotificationProvider = ({ children }: PropsWithChildren) => {
   const [notification, setNotification] = useState<Notifications.Notification | undefined>(
     undefined
   );
-  const [isEnabled, setIsEnabled] = useState(false); // Initialize isEnabled as false
+  const [isEnabled, setIsEnabled] = useState(true); // Initialize isEnabled as true
   const notificationListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
 
